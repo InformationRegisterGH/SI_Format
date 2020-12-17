@@ -351,7 +351,7 @@ namespace InfoReg
         {
             // si_value is expected as 999.9999 km or 999.99999 kilo-metres
             // get numerical value
-            string[] string_parts = si_value.Split(' ');
+            string[] string_parts = si_value.Trim().Split(' ');
             try
             {
                 dnum = double.Parse(string_parts[0]);
@@ -421,7 +421,7 @@ namespace InfoReg
         {
             // si_vale is expected as 999.9999 km or 999.99999 kilo-metres
             // get numerical value
-            string[] string_parts = si_value.Split(' ');
+            string[] string_parts = si_value.Trim().Split(' ');
             try
             {
                 dnum = decimal.Parse(string_parts[0]);
@@ -464,11 +464,11 @@ namespace InfoReg
             }
             if (pos < 8)
             {
-                exp_adjust = (8.0 - pos) * 3.0;
+                exp_adjust = (double)((8 - pos) * 3);
             }
             else
             {
-                exp_adjust = (pos - 8.0) * -3.0;
+                exp_adjust = (double)((pos - 8) * -3);
             }
             double ten = 10.0;
             exp_adjust = Math.Pow(ten, exp_adjust);
@@ -485,15 +485,66 @@ namespace InfoReg
         ///          InfoReg.SI_Format.Parse("1.23456 km", out val);
         ///          => val has the value 1.23456e3
         /// 
-        /// This function calls Parse(String, out Double) and converts the double to a float.
         /// </summary>
         /// <param name="si_value">A string value like 12.345MHz</param>
         /// <param name="f_num">A float that will be assigned the parsed value from the SI formatted string</param>
         /// <returns>A float value adjusted for the SI prefix value.</returns>
+
         public static void Parse(string si_value, out float f_num)
         {
-            Parse(si_value, out double d_num);
-            f_num = (float)d_num;
+            // si_value is expected as 999.9999 km or 999.99999 kilo-metres
+            // get numerical value
+            string[] string_parts = si_value.Trim().Split(' ');
+            try
+            {
+                f_num = float.Parse(string_parts[0]);
+            }
+            catch (Exception e1)
+            {
+                throw new Exception("Error: SI_ParseDouble failed to parse number part from " + si_value, e1);
+            }
+
+            // Parse units to get the exponent multiplier
+            string[] units = string_parts[1].Split('-'); // if units is null assume short types like kg
+            float exp_adjust;
+            int pos;
+            if (units.Length == 1) // implies short notation
+            {
+                // m for metres on its own no need to adjust exponent
+                if (units[0].Length == 1)
+                {
+                    return;
+                }
+                // short_prefixes string is character order dependent
+                string short_prefixes = "YZEPTGMk mμnpfazy";
+                pos = short_prefixes.IndexOf(string_parts[1][0]);
+            }
+            else
+            {
+                // A unit has been specfied
+                // Space is used to avoid a false positive where no prefix was given.
+                // si_prefixes array is order dependent
+                string[] si_prefixes = { "yotta", "zetta", "exa", "peta", "tera", "giga", "mega", "kilo",
+                                    " ", "milli", "micro", "nano", "pico", "femto", "atto", "zepto", "yocto" };
+                pos = 0;
+                // Math.Min avoids a potential argument out of range issue
+                while (si_prefixes[pos] != units[0].Substring(0, Math.Min(si_prefixes[pos].Length, units[0].Length)) && pos < si_prefixes.Length) pos++;
+                if (pos == si_prefixes.Length) pos = -1;
+            }
+            if (pos < 0 || pos == 8)
+            {
+                return;
+            }
+            if (pos < 8)
+            {
+                exp_adjust = (float)((8 - pos) * 3);
+            }
+            else
+            {
+                exp_adjust = (float)((pos - 8) * -3);
+            }
+            float ten = (float)10.0;
+            f_num *= MathF.Pow(ten, exp_adjust);
         }
     }
 }

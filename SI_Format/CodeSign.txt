@@ -1,0 +1,22 @@
+nuget sign SI_Format.1.1.0.nupkg -CertificatePath .\InfoRegCodeSigningCert.cer -Timestamper http://timestamp.sectigo.com -overwrite
+
+nuget sign SI_Format.1.1.1.nupkg -CertificateSubjectName "Information Register" -Timestamper http://timestamp.sectigo.com -overwrite
+
+WARNING: Could not load file or assembly 'HolographicExtensions.dll' or one of its dependencies. The module was expected to contain an assembly manifest.
+WARNING: Could not load file or assembly 'HoloSHExtensions.dll' or one of its dependencies. The module was expected to contain an assembly manifest.
+WARNING: Could not load file or assembly 'PerceptionSimulationExtensions.dll' or one of its dependencies. The module was expected to contain an assembly manifest.
+WARNING: Could not load file or assembly 'Windows.Devices.Printers.Extensions.dll' or one of its dependencies. The module was expected to contain an assembly manifest.
+
+
+Signing package(s) with certificate:
+  Subject Name: CN=Information Register, O=Information Register, STREET=9 Kempton Avenue, L=Ashtown, S=Dublin, PostalCode=D07X2Y8, C=IE
+  SHA1 hash: DAC146B973CCB68708489B99A5EC18450835698A
+  SHA256 hash: 5DEF2ED04989070DA3B9BC3F7599A764182D0332E7CA4EAFCEFF700324E08324
+  Issued by: CN=Sectigo RSA Code Signing CA, O=Sectigo Limited, L=Salford, S=Greater Manchester, C=GB
+  Valid from: 16/11/2020 00:00:00 to 16/11/2023 23:59:59
+
+Timestamping package(s) with:
+http://timestamp.sectigo.com
+Package(s) signed successfully.
+
+C:\Users\Conor\source\repos\SI_Format\SI_Format\bin\Release>
