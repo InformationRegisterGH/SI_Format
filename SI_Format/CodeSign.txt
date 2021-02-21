@@ -1,6 +1,6 @@
 nuget sign SI_Format.1.1.0.nupkg -CertificatePath .\InfoRegCodeSigningCert.cer -Timestamper http://timestamp.sectigo.com -overwrite
 
-nuget sign SI_Format.1.1.1.nupkg -CertificateSubjectName "Information Register" -Timestamper http://timestamp.sectigo.com -overwrite
+nuget sign SI_Format.1.1.2.nupkg -CertificateSubjectName "Information Register" -Timestamper http://timestamp.sectigo.com -overwrite
 
 WARNING: Could not load file or assembly 'HolographicExtensions.dll' or one of its dependencies. The module was expected to contain an assembly manifest.
 WARNING: Could not load file or assembly 'HoloSHExtensions.dll' or one of its dependencies. The module was expected to contain an assembly manifest.

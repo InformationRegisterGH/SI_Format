@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.1;netcoreapp3.1;net5.0</TargetFrameworks>
+    <TargetFrameworks>netstandard2.1;net5.0;net6.0</TargetFrameworks>
     <!-- <TargetFramework>net5.0</TargetFramework> -->
     <RootNamespace>InfoReg</RootNamespace>
     <AssemblyName>SI_Format</AssemblyName>
@@ -11,17 +11,17 @@
       SI_Format will also adjust the value of float, double or decimal such that 34,560 may be written as 34.56kB 
       where "B" was passed as the unit to use.
     </Description>
-    <Copyright>2019-2020 Information Register</Copyright>
+    <Copyright>Copyright (C) 2019-2021 Information Register</Copyright>
     <Deterministic>true</Deterministic>
-    <AssemblyVersion>1.1.1.0</AssemblyVersion>
+    <AssemblyVersion>1.1.2.0</AssemblyVersion>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageLicenseExpression></PackageLicenseExpression>
     <PackageLicenseFile>license.txt</PackageLicenseFile>
     <RepositoryUrl>https://github.com/InformationRegisterGH/SI_Format</RepositoryUrl>
     <RepositoryType>github</RepositoryType>
-    <Version>1.1.1</Version>
-    <FileVersion>1.1.1.0</FileVersion>
-    <SignAssembly>true</SignAssembly>
+    <Version>1.1.2</Version>
+    <FileVersion>1.1.2.0</FileVersion>
+    <SignAssembly>false</SignAssembly>
     <DelaySign>false</DelaySign>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <EnableNETAnalyzers>true</EnableNETAnalyzers>

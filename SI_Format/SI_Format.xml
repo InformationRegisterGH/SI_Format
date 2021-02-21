@@ -320,7 +320,6 @@
                      InfoReg.SI_Format.Parse("1.23456 km", out val);
                      => val has the value 1.23456e3
             
-            This function calls Parse(String, out Double) and converts the double to a float.
             </summary>
             <param name="si_value">A string value like 12.345MHz</param>
             <param name="f_num">A float that will be assigned the parsed value from the SI formatted string</param>
