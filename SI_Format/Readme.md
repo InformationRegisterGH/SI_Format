@@ -23,7 +23,7 @@ strings like 10pF or 123.46 kilo-metres or 65.123 ml.
 Padding is an enumberated type.
 An enumerated value to indicate if a dash "-" is required between the SI prefix and 
 the unit as in kilo-gram. 
-Padding will also indcate if a traling space should be appended as padding.
+Padding will also indcate if a trailing space should be appended as padding.
 </p>
 <h4>InfoReg.SI_Format.Padding.dashonly</h4>
 <p>

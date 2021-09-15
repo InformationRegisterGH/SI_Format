@@ -108,22 +108,22 @@ namespace InfoRegSI
             float val;
             string AssertErrorMsg = "InfoReg.SI_Format.ParseFloat failed.";
             InfoReg.SI_Format.Parse("1.23456 km", out val);
-            double dans = 1.23456e3;
+            float dans = (float)1.23456e3;
             Assert.AreEqual(dans, val, 1.0e-4, AssertErrorMsg);
             InfoReg.SI_Format.Parse("1.23456 mega-litres", out val);
-            dans = 1.23456e6;
+            dans = (float)1.23456e6;
             Assert.AreEqual(dans, val, 1.0e-3, AssertErrorMsg);
             InfoReg.SI_Format.Parse("1.23456 pico-farad", out val);
-            dans = 1.23456e-12;
+            dans = (float)1.23456e-12;
             Assert.AreEqual(dans, val, 1.0e-18, AssertErrorMsg);
             InfoReg.SI_Format.Parse("1.23456 ns", out val);
-            dans = 1.23456e-9;
+            dans = (float)1.23456e-9;
             Assert.AreEqual(dans, val, 1.0e-15, AssertErrorMsg);
             InfoReg.SI_Format.Parse("1.23456 m", out val);
-            dans = 1.23456;
+            dans = (float)1.23456;
             Assert.AreEqual(dans, val, 1.0e-6, AssertErrorMsg);
             InfoReg.SI_Format.Parse("1.23456 kilometres", out val);
-            dans = 1.23456e3;
+            dans = (float)1.23456e3;
             Assert.AreEqual(dans, val, 1.0e-4, AssertErrorMsg);
         }
 
