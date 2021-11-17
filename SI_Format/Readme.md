@@ -1,17 +1,21 @@
 <h1>SI_Format</h1>
+<p>
 InfoReg.SI_Format Provides functions to parse strings like 23.56MHz as a float or single, double, or decimal value like
 23,560,000.0. InfoReg.SI_Format provides functions to write 1,860 as 1.86km or 1.86 kilometres.
-
-SI_Format also has a number of constants used by the engineering and scientific workers. These are
-described at the end of this file.
-
-Version: 1.1.2 is built for .NET 6 runtime environments. The Visual Studio 2019 project files,
+</p>
+<p>
+SI_Format also has a number of physical constants used by the engineering and scientific workers. An example is 
+InfoReg.Physical_Constants.LightSpeed. These are described at the end of this file.
+</p>
+<p>
+Version: 1.1.2 is built for .NET 5 and .NET 6 runtime environments. The Visual Studio 2022 project files,
 C# source code, and unit tests are available on GitHub at:
 https://github.com/InformationRegisterGH/SI_Format
-
+</p>
+<p>
 The applicable license agreement is available at:
 https://github.com/InformationRegisterGH/SI_Format/blob/Main/SI_Format/license.txt
-
+</p>
 <hr />
 <h2>InfoReg.SI_Format</h2>
 <p>
