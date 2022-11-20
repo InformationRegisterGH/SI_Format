@@ -6,12 +6,12 @@ InfoReg.SI_Format Provides functions to parse strings like 23.56MHz as a float o
 SI_Format also has a number of physical constants used by the engineering and scientific workers. An example is 
 InfoReg.Physical_Constants.LightSpeed. These are described at the end of this file.
 
-Version: 1.1.2 is built for .NET 5 and .NET 6 runtime environments. The Visual Studio 2022 project files,
+Version: 1.1.3 is built for .NET 6 and .NET 7 runtime environments. The Visual Studio 2022 project files,
 C# source code, and unit tests are available on GitHub at:
 https://github.com/InformationRegisterGH/SI_Format
 
 The applicable license agreement is available at: 
-https://github.com/InformationRegisterGH/SI_Format/blob/Main/SI_Format/license.txt
+https://github.com/InformationRegisterGH/SIFormat/blob/Main/SI_Format/license.txt
 
 ---
 ## InfoReg.SI_Format
@@ -19,7 +19,7 @@ https://github.com/InformationRegisterGH/SI_Format/blob/Main/SI_Format/license.t
 SI_Format is a class that contains functions to adjust or parse numbers to and from
 strings like 10pF or 123.46 kilo-metres or 65.123 ml.
 
-### InfoReg.SI_Format.Padding<
+### InfoReg.SI_Format.Padding
 
 Padding is an enumberated type.
 An enumerated value to indicate if a dash "-" is required between the SI prefix and 
@@ -33,7 +33,7 @@ Padding will also indcate if a trailing space should be appended as padding.
 #### InfoReg.SI_Format.Padding.paddingOnly
     paddingOnly: Add a trailing space only
 #### InfoReg.SI_Format.Padding.noPaddingOrDash
-    noPaddingOrDash: No dash and no trailing space required
+    noPaddingOrDash: Neither dash, nor trailing space required
 
 ---
 
@@ -63,7 +63,7 @@ Note: hecto, deca, deci, and centi are not supported.
 #### d_val
 A double value to be SI normalized.
 #### sformat
-Is the format string usually based on G or N
+Is the format string usually based on G or N (see C# string.Format).
 #### siunit
 An SI unit like watt, metre or l
 #### padding

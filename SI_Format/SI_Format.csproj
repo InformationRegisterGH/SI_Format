@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net5.0;net6.0</TargetFrameworks>
+    <TargetFrameworks>net6.0;net7.0</TargetFrameworks>
     <!-- <TargetFramework>net5.0</TargetFramework> -->
     <RootNamespace>InfoReg</RootNamespace>
     <AssemblyName>SI_Format</AssemblyName>
@@ -10,8 +10,8 @@
     <Description>SI_Format allows strings like 21.34km be parsed to return a numerical value of 21,340 as a float, double or decimal. 
       SI_Format will also adjust the value of float, double or decimal such that 34,560 may be written as 34.56kB 
       where "B" was passed as the unit to use.
-    </Description>
-    <Copyright>Copyright (C) 2019-2021 Information Register</Copyright>
+Some physical constants are provided for C# use.    </Description>
+    <Copyright>Copyright (C) 2019-2022 Information Register</Copyright>
     <Deterministic>true</Deterministic>
     <AssemblyVersion>1.1.2.0</AssemblyVersion>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
@@ -19,7 +19,7 @@
     <PackageLicenseFile>license.txt</PackageLicenseFile>
     <RepositoryUrl>https://github.com/InformationRegisterGH/SI_Format</RepositoryUrl>
     <RepositoryType>github</RepositoryType>
-    <Version>1.1.2</Version>
+    <Version>1.1.3</Version>
     <FileVersion>1.1.2.0</FileVersion>
     <SignAssembly>false</SignAssembly>
     <DelaySign>false</DelaySign>
