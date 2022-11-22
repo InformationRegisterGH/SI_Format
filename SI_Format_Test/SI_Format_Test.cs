@@ -86,9 +86,8 @@ namespace InfoRegSI
         [TestMethod]
         public void SI_ParseDouble()
         {
-            double val;
             string AssertErrorMsg = "Double InfoReg.SI_Format.Parse failed.";
-            InfoReg.SI_Format.Parse("1.23456 km", out val);
+            InfoReg.SI_Format.Parse("1.23456 km", out double val);
             double dans = 1.23456e3;
             Assert.AreEqual(dans, val, 1.0e-6, AssertErrorMsg);
             InfoReg.SI_Format.Parse("1.23456 mega-litres", out val);
@@ -111,9 +110,8 @@ namespace InfoRegSI
         [TestMethod]
         public void SI_ParseFloat()
         {
-            float val;
             string AssertErrorMsg = "InfoReg.SI_Format.ParseFloat failed.";
-            InfoReg.SI_Format.Parse("1.23456 km", out val);
+            InfoReg.SI_Format.Parse("1.23456 km", out float val);
             float dans = (float)1.23456e3;
             Assert.AreEqual(dans, val, 1.0e-4, AssertErrorMsg);
             InfoReg.SI_Format.Parse("1.23456 mega-litres", out val);
@@ -136,9 +134,8 @@ namespace InfoRegSI
         [TestMethod]
         public void SI_ParseDecimal()
         {
-            decimal val;
             string AssertErrorMsg = "InfoReg.SI_Format.ParseDecimal failed.";
-            InfoReg.SI_Format.Parse("1.234567890123456789012 km", out val);
+            InfoReg.SI_Format.Parse("1.234567890123456789012 km", out decimal val);
             decimal dans = (decimal)1234.567890123456789012;
             Assert.AreEqual(dans.ToString("N"), val.ToString("N"), true, AssertErrorMsg);
             InfoReg.SI_Format.Parse("1.234567890123456789012 mega-litres", out val);

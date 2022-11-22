@@ -175,18 +175,18 @@
             is reduced to its residue three value. It then prefixes the unit
             passed in with the appropriate SI prefix.
             
-            "yotta", "zetta", "exa", "peta", "tera", "giga", "mega", "kilo",
-            "", "milli", "micro", "nano", "pico", "femto", "atto", "zepto", "yocto"
+            "quetta", "ronna", "yotta", "zetta", "exa", "peta", "tera", "giga", "mega", "kilo",
+            "", "milli", "micro", "nano", "pico", "femto", "atto", "zepto", "yocto", "ronto", "quecto"
             
             If siunit is two or less characters the return will use short SI
             prefixes like:
-            "Y", "Z", "E", "P", "T", "G", "M", "k",
-            "", "m", "μ", "n", "p", "f", "a", "z", "y"
+            "Q", "R", "Y", "Z", "E", "P", "T", "G", "M", "k",
+            "", "m", "μ", "n", "p", "f", "a", "z", "y", "r", "q"
             
             No prefix is needed if the value of d_val lies in the range 0.0 to just under 1000.0.
             
             Note: hecto, deca, deci, and centi are not supported.
-                  SI does not support numbers above 10^27 or below 10^-24 
+                  SI does not support numbers above 10^33 or below 10^-30 
                   and any such value will be returned unmodified without SI prefix units.
                   
             </summary>
@@ -213,18 +213,18 @@
             is reduced to its residue three value. It then prefixes the unit
             passed in with the appropriate SI prefix.
             
-            "yotta", "zetta", "exa", "peta", "tera", "giga", "mega", "kilo",
-            "", "milli", "micro", "nano", "pico", "femto", "atto", "zepto", "yocto"
+            "quetta", "ronna", "yotta", "zetta", "exa", "peta", "tera", "giga", "mega", "kilo",
+            "", "milli", "micro", "nano", "pico", "femto", "atto", "zepto", "yocto", "ronto", "quecto"
             
             If siunit is two or less characters the return will use short SI
             prefixes like:
-            "Y", "Z", "E", "P", "T", "G", "M", "k",
-            "", "m", "μ", "n", "p", "f", "a", "z", "y"
+            "Q", "R", "Y", "Z", "E", "P", "T", "G", "M", "k",
+            "", "m", "μ", "n", "p", "f", "a", "z", "y", "r", "q"
             
             No prefix is needed if the value of d_val lies in the range 0.0 to just under 1000.0.
             
             Note: hecto, deca, deci, and centi are not supported.
-                  SI does not support numbers above 10^27 or below 10^-24 
+                  SI does not support numbers above 10^33 or below 10^-30 
                   and any such value will be returned unmodified without SI prefix units.
             Example: ...
                      using InfoReg;
@@ -249,18 +249,18 @@
             is reduced to its residue three value. It then prefixes the unit
             passed in with the appropriate SI prefix.
             
-            "yotta", "zetta", "exa", "peta", "tera", "giga", "mega", "kilo",
-            "", "milli", "micro", "nano", "pico", "femto", "atto", "zepto", "yocto"
+            "quetta", "ronna", "yotta", "zetta", "exa", "peta", "tera", "giga", "mega", "kilo",
+            "", "milli", "micro", "nano", "pico", "femto", "atto", "zepto", "yocto", "ronto", "quecto"
             
             If siunit is two or less characters the return will use short SI
             prefixes like:
-            "Y", "Z", "E", "P", "T", "G", "M", "k",
-            "", "m", "μ", "n", "p", "f", "a", "z", "y"
+            "Q", "R", "Y", "Z", "E", "P", "T", "G", "M", "k",
+            "", "m", "μ", "n", "p", "f", "a", "z", "y", "r", "q"
             
             No prefix is needed if the value of d_val lies in the range 0.0 to just under 1000.0.
             
             Note: hecto, deca, deci, and centi are not supported.
-                  SI does not support numbers above 10^27 or below 10^-24 
+                  SI does not support numbers above 10^33 or below 10^-30 
                   and any such value will be returned unmodified without SI prefix units.
             Example: ...
                      using InfoReg;

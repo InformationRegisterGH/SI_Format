@@ -454,7 +454,7 @@ namespace InfoReg
                 // si_prefixes array is order dependent
                 string[] si_prefixes = { "quetta", "ronna", "yotta", "zetta", "exa", "peta", "tera", "giga", "mega", "kilo",
                         "", "milli", "micro", "nano", "pico", "femto", "atto", "zepto", "yocto", "ronto", "quecto" };
-                for(pos = 0;pos < si_prefixes.Length;pos++)
+                for (pos = 0; pos < si_prefixes.Length; pos++)
                 {
                     if (si_prefixes[pos] == units[0]) { break; }
                 }
