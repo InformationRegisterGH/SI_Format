@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFrameworks>net6.0;net7.0;</TargetFrameworks>
     <IsPackable>False</IsPackable>
     <AssemblyVersion>1.0.32.7386</AssemblyVersion>
     <FileVersion>1.0.32.7386</FileVersion>
@@ -10,6 +10,7 @@
     <OutputType>Library</OutputType>
     <StartupObject />
     <SignAssembly>false</SignAssembly>
+    <BaseOutputPath>bin\</BaseOutputPath>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">

@@ -13,20 +13,22 @@
 Some physical constants are provided for C# use.    </Description>
     <Copyright>Copyright (C) 2019-2022 Information Register</Copyright>
     <Deterministic>true</Deterministic>
-    <AssemblyVersion>1.1.2.0</AssemblyVersion>
+    <AssemblyVersion>1.1.3.0</AssemblyVersion>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageLicenseExpression></PackageLicenseExpression>
     <PackageLicenseFile>license.txt</PackageLicenseFile>
     <RepositoryUrl>https://github.com/InformationRegisterGH/SI_Format</RepositoryUrl>
     <RepositoryType>github</RepositoryType>
     <Version>1.1.3</Version>
-    <FileVersion>1.1.2.0</FileVersion>
+    <FileVersion>1.1.3.0</FileVersion>
     <SignAssembly>false</SignAssembly>
     <DelaySign>false</DelaySign>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <DocumentationFile>C:\Users\Conor\source\repos\SI_Format\SI_Format\SI_Format.xml</DocumentationFile>
+    <IncludeSymbols>True</IncludeSymbols>
+    <BaseOutputPath>bin\</BaseOutputPath>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
