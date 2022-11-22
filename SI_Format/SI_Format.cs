@@ -42,18 +42,18 @@ namespace InfoReg
         /// is reduced to its residue three value. It then prefixes the unit
         /// passed in with the appropriate SI prefix.
         /// 
-        /// "yotta", "zetta", "exa", "peta", "tera", "giga", "mega", "kilo",
-        /// "", "milli", "micro", "nano", "pico", "femto", "atto", "zepto", "yocto"
+        /// "quetta", "ronna", "yotta", "zetta", "exa", "peta", "tera", "giga", "mega", "kilo",
+        /// "", "milli", "micro", "nano", "pico", "femto", "atto", "zepto", "yocto", "ronto", "quecto"
         /// 
         /// If siunit is two or less characters the return will use short SI
         /// prefixes like:
-        /// "Y", "Z", "E", "P", "T", "G", "M", "k",
-        /// "", "m", "μ", "n", "p", "f", "a", "z", "y"
+        /// "Q", "R", "Y", "Z", "E", "P", "T", "G", "M", "k",
+        /// "", "m", "μ", "n", "p", "f", "a", "z", "y", "r", "q"
         /// 
         /// No prefix is needed if the value of d_val lies in the range 0.0 to just under 1000.0.
         /// 
         /// Note: hecto, deca, deci, and centi are not supported.
-        ///       SI does not support numbers above 10^27 or below 10^-24 
+        ///       SI does not support numbers above 10^33 or below 10^-30 
         ///       and any such value will be returned unmodified without SI prefix units.
         ///       
         /// </summary>
@@ -79,14 +79,14 @@ namespace InfoReg
             // return unmodified without SI prefix units
             double exp;
             exp = Math.Log10(d_val);
-            if (exp >= 27.0 || exp <= -24.0)
+            if (exp >= 33.0 || exp <= -30.0)
             {
                 return string.Format("{0:" + sformat + "} {1}", d_val, siunit);
             }
             else
             {
                 int exp1 = (int)exp / 3 * 3;
-                int adjust = 8; // Array element for no SI prefix
+                int adjust = 10; // Array element for no SI prefix
                 if (exp < 0)
                 {
                     exp1 -= 3;
@@ -95,12 +95,12 @@ namespace InfoReg
                 int prefix_choice = -(exp1 / 3) + adjust;
                 if (siunit.Length >= 3)
                 {
-                    string[] si_prefixes = { "yotta", "zetta", "exa", "peta", "tera", "giga", "mega", "kilo",
-                        "", "milli", "micro", "nano", "pico", "femto", "atto", "zepto", "yocto" };
+                    string[] si_prefixes = { "quetta", "ronna", "yotta", "zetta", "exa", "peta", "tera", "giga", "mega", "kilo",
+                        "", "milli", "micro", "nano", "pico", "femto", "atto", "zepto", "yocto", "ronto", "quecto" };
                     switch (padding)
                     {
                         case Padding.dashonly:
-                            if (prefix_choice != 8)
+                            if (prefix_choice != 10)
                             {
                                 return string.Format("{0:" + sformat + "} ", dval) + si_prefixes[prefix_choice] + "-" + siunit;
                             }
@@ -109,7 +109,7 @@ namespace InfoReg
                                 return string.Format("{0:" + sformat + "} ", dval) + si_prefixes[prefix_choice] + siunit;
                             }
                         case Padding.dashWithPadding:
-                            if (prefix_choice != 8)
+                            if (prefix_choice != 10)
                             {
                                 return string.Format("{0:" + sformat + "} ", dval) + si_prefixes[prefix_choice] + "-" + siunit + " ";
                             }
@@ -124,8 +124,8 @@ namespace InfoReg
                 }
                 else
                 {
-                    string[] si_prefixes = { "Y", "Z", "E", "P", "T", "G", "M", "k",
-                        "", "m", "μ", "n", "p", "f", "a", "z", "y" };
+                    string[] si_prefixes = { "Q", "R", "Y", "Z", "E", "P", "T", "G", "M", "k",
+                        "", "m", "μ", "n", "p", "f", "a", "z", "y", "r", "q" };
                     // A dash is not supported for short SI unit prefixes. Thus, supply with padding (a trailing space) or without
                     if (padding == Padding.dashWithPadding || padding == Padding.paddingOnly)
                     {
@@ -145,18 +145,18 @@ namespace InfoReg
         /// is reduced to its residue three value. It then prefixes the unit
         /// passed in with the appropriate SI prefix.
         /// 
-        /// "yotta", "zetta", "exa", "peta", "tera", "giga", "mega", "kilo",
-        /// "", "milli", "micro", "nano", "pico", "femto", "atto", "zepto", "yocto"
+        /// "quetta", "ronna", "yotta", "zetta", "exa", "peta", "tera", "giga", "mega", "kilo",
+        /// "", "milli", "micro", "nano", "pico", "femto", "atto", "zepto", "yocto", "ronto", "quecto"
         /// 
         /// If siunit is two or less characters the return will use short SI
         /// prefixes like:
-        /// "Y", "Z", "E", "P", "T", "G", "M", "k",
-        /// "", "m", "μ", "n", "p", "f", "a", "z", "y"
+        /// "Q", "R", "Y", "Z", "E", "P", "T", "G", "M", "k",
+        /// "", "m", "μ", "n", "p", "f", "a", "z", "y", "r", "q"
         /// 
         /// No prefix is needed if the value of d_val lies in the range 0.0 to just under 1000.0.
         /// 
         /// Note: hecto, deca, deci, and centi are not supported.
-        ///       SI does not support numbers above 10^27 or below 10^-24 
+        ///       SI does not support numbers above 10^33 or below 10^-30 
         ///       and any such value will be returned unmodified without SI prefix units.
         /// Example: ...
         ///          using InfoReg;
@@ -181,14 +181,14 @@ namespace InfoReg
             // return unmodified without SI prefix units
             float exp;
             exp = System.MathF.Log10(f_val);
-            if (exp >= 27.0 || exp <= -24.0)
+            if (exp >= 33.0 || exp <= -30.0)
             {
                 return string.Format("{0:" + sformat + "} {1}", f_val, siunit);
             }
             else
             {
                 int exp1 = (int)exp / 3 * 3;
-                int adjust = 8; // Array element for no SI prefix
+                int adjust = 10; // Array element for no SI prefix
                 if (exp < 0)
                 {
                     exp1 -= 3;
@@ -197,12 +197,12 @@ namespace InfoReg
                 int prefix_choice = -(exp1 / 3) + adjust;
                 if (siunit.Length >= 3)
                 {
-                    string[] si_prefixes = { "yotta", "zetta", "exa", "peta", "tera", "giga", "mega", "kilo",
-                        "", "milli", "micro", "nano", "pico", "femto", "atto", "zepto", "yocto" };
+                    string[] si_prefixes = { "quetta", "ronna", "yotta", "zetta", "exa", "peta", "tera", "giga", "mega", "kilo",
+                        "", "milli", "micro", "nano", "pico", "femto", "atto", "zepto", "yocto", "ronto", "quecto" };
                     switch (padding)
                     {
                         case Padding.dashonly:
-                            if (prefix_choice != 8)
+                            if (prefix_choice != 10)
                             {
                                 return string.Format("{0:" + sformat + "} ", ffval) + si_prefixes[prefix_choice] + "-" + siunit;
                             }
@@ -211,7 +211,7 @@ namespace InfoReg
                                 return string.Format("{0:" + sformat + "} ", ffval) + si_prefixes[prefix_choice] + siunit;
                             }
                         case Padding.dashWithPadding:
-                            if (prefix_choice != 8)
+                            if (prefix_choice != 10)
                             {
                                 return string.Format("{0:" + sformat + "} ", ffval) + si_prefixes[prefix_choice] + "-" + siunit + " ";
                             }
@@ -226,8 +226,8 @@ namespace InfoReg
                 }
                 else
                 {
-                    string[] si_prefixes = { "Y", "Z", "E", "P", "T", "G", "M", "k",
-                        "", "m", "μ", "n", "p", "f", "a", "z", "y" };
+                    string[] si_prefixes = { "Q", "R", "Y", "Z", "E", "P", "T", "G", "M", "k",
+                        "", "m", "μ", "n", "p", "f", "a", "z", "y", "r", "q" };
                     // A dash is not supported for short SI unit prefixes. Thus, supply with padding (a trailing space) or without
                     if (padding == Padding.dashWithPadding || padding == Padding.paddingOnly)
                     {
@@ -247,18 +247,18 @@ namespace InfoReg
         /// is reduced to its residue three value. It then prefixes the unit
         /// passed in with the appropriate SI prefix.
         /// 
-        /// "yotta", "zetta", "exa", "peta", "tera", "giga", "mega", "kilo",
-        /// "", "milli", "micro", "nano", "pico", "femto", "atto", "zepto", "yocto"
+        /// "quetta", "ronna", "yotta", "zetta", "exa", "peta", "tera", "giga", "mega", "kilo",
+        /// "", "milli", "micro", "nano", "pico", "femto", "atto", "zepto", "yocto", "ronto", "quecto"
         /// 
         /// If siunit is two or less characters the return will use short SI
         /// prefixes like:
-        /// "Y", "Z", "E", "P", "T", "G", "M", "k",
-        /// "", "m", "μ", "n", "p", "f", "a", "z", "y"
+        /// "Q", "R", "Y", "Z", "E", "P", "T", "G", "M", "k",
+        /// "", "m", "μ", "n", "p", "f", "a", "z", "y", "r", "q"
         /// 
         /// No prefix is needed if the value of d_val lies in the range 0.0 to just under 1000.0.
         /// 
         /// Note: hecto, deca, deci, and centi are not supported.
-        ///       SI does not support numbers above 10^27 or below 10^-24 
+        ///       SI does not support numbers above 10^33 or below 10^-30 
         ///       and any such value will be returned unmodified without SI prefix units.
         /// Example: ...
         ///          using InfoReg;
@@ -280,14 +280,14 @@ namespace InfoReg
         public static string Format(decimal decimal_val, string sformat, string siunit, Padding padding = Padding.dashonly)
         {
             double exp = Math.Log10((double)decimal_val);
-            if (exp >= 27.0 || exp <= -24.0)
+            if (exp >= 33.0 || exp <= -30.0)
             {
                 return string.Format("{0:" + sformat + "} {1}", decimal_val, siunit);
             }
             else
             {
                 int exp1 = (int)exp / 3 * 3;
-                int adjust = 8;  // Array element for no SI prefix
+                int adjust = 10;  // Array element for no SI prefix
                 if (exp < 0)
                 {
                     exp1 -= 3;
@@ -295,13 +295,13 @@ namespace InfoReg
                 decimal decimal_val1 = decimal_val / (decimal)Math.Pow(10.0, exp1);
                 if (siunit.Length >= 3)
                 {
-                    string[] si_prefixes = { "yotta", "zetta", "exa", "peta", "tera", "giga", "mega", "kilo",
-                        "", "milli", "micro", "nano", "pico", "femto", "atto", "zepto", "yocto" };
+                    string[] si_prefixes = { "quetta", "ronna", "yotta", "zetta", "exa", "peta", "tera", "giga", "mega", "kilo",
+                        "", "milli", "micro", "nano", "pico", "femto", "atto", "zepto", "yocto", "ronto", "quecto" };
                     int prefix_choice = -(exp1 / 3) + adjust;
                     switch (padding)
                     {
                         case Padding.dashonly:
-                            if (prefix_choice != 8)
+                            if (prefix_choice != 10)
                             {
                                 return string.Format("{0:" + sformat + "} ", decimal_val1) + si_prefixes[prefix_choice] + "-" + siunit;
                             }
@@ -310,7 +310,7 @@ namespace InfoReg
                                 return string.Format("{0:" + sformat + "} ", decimal_val1) + si_prefixes[prefix_choice] + siunit;
                             }
                         case Padding.dashWithPadding:
-                            if (prefix_choice != 8)
+                            if (prefix_choice != 10)
                             {
                                 return string.Format("{0:" + sformat + "} ", decimal_val1) + si_prefixes[prefix_choice] + "-" + siunit + " ";
                             }
@@ -326,8 +326,8 @@ namespace InfoReg
                 }
                 else
                 {
-                    string[] si_prefixes = { "Y", "Z", "E", "P", "T", "G", "M", "k",
-                        "", "m", "μ", "n", "p", "f", "a", "z", "y" };
+                    string[] si_prefixes = { "Q", "R", "Y", "Z", "E", "P", "T", "G", "M", "k",
+                        "", "m", "μ", "n", "p", "f", "a", "z", "y", "r", "q" };
                     return string.Format("{0:" + sformat + "} ", decimal_val1) + si_prefixes[-(exp1 / 3) + adjust] + siunit;
                 }
             }
@@ -373,7 +373,7 @@ namespace InfoReg
                     return;
                 }
                 // short_prefixes string is character order dependent
-                string short_prefixes = "YZEPTGMk mμnpfazy";
+                string short_prefixes = "QRYZEPTGMk mμnpfazyrq";
                 pos = short_prefixes.IndexOf(string_parts[1][0]);
             }
             else
@@ -381,24 +381,25 @@ namespace InfoReg
                 // A unit has been specfied
                 // Space is used to avoid a false positive where no prefix was given.
                 // si_prefixes array is order dependent
-                string[] si_prefixes = { "yotta", "zetta", "exa", "peta", "tera", "giga", "mega", "kilo",
-                        " ", "milli", "micro", "nano", "pico", "femto", "atto", "zepto", "yocto" };
-                pos = 0;
-                // Math.Min avoids a potential argument out of range issue
-                while (si_prefixes[pos] != units[0].Substring(0, Math.Min(si_prefixes[pos].Length, units[0].Length)) && pos < si_prefixes.Length) pos++;
+                string[] si_prefixes = { "quetta", "ronna", "yotta", "zetta", "exa", "peta", "tera", "giga", "mega", "kilo",
+                        "", "milli", "micro", "nano", "pico", "femto", "atto", "zepto", "yocto", "ronto", "quecto" };
+                for (pos = 0; pos < si_prefixes.Length; pos++)
+                {
+                    if (si_prefixes[pos] == units[0]) { break; }
+                }
                 if (pos == si_prefixes.Length) pos = -1;
             }
-            if (pos < 0 || pos == 8)
+            if (pos < 0 || pos == 10)
             {
                 return;
             }
-            if (pos < 8)
+            if (pos < 10)
             {
-                exp_adjust = (8.0 - pos) * 3.0;
+                exp_adjust = (10.0 - pos) * 3.0;
             }
             else
             {
-                exp_adjust = (pos - 8.0) * -3.0;
+                exp_adjust = (pos - 10.0) * -3.0;
             }
             double ten = 10.0;
             dnum *= Math.Pow(ten, exp_adjust);
@@ -443,7 +444,7 @@ namespace InfoReg
                     return;
                 }
                 // short_prefixes string is character order dependent
-                string short_prefixes = "YZEPTGMk mμnpfazy";
+                string short_prefixes = "QRYZEPTGMk mμnpfazyrq";
                 pos = short_prefixes.IndexOf(string_parts[1][0]);
             }
             else
@@ -451,24 +452,25 @@ namespace InfoReg
                 // A unit has been specfied
                 // Space is used to avoid a false positive where no prefix was given.
                 // si_prefixes array is order dependent
-                string[] si_prefixes = { "yotta", "zetta", "exa", "peta", "tera", "giga", "mega", "kilo",
-                        " ", "milli", "micro", "nano", "pico", "femto", "atto", "zepto", "yocto" };
-                pos = 0;
-                // Math.Min avoids a potential argument out of range issue
-                while (si_prefixes[pos] != units[0].Substring(0, Math.Min(si_prefixes[pos].Length, units[0].Length)) && pos < si_prefixes.Length) pos++;
+                string[] si_prefixes = { "quetta", "ronna", "yotta", "zetta", "exa", "peta", "tera", "giga", "mega", "kilo",
+                        "", "milli", "micro", "nano", "pico", "femto", "atto", "zepto", "yocto", "ronto", "quecto" };
+                for(pos = 0;pos < si_prefixes.Length;pos++)
+                {
+                    if (si_prefixes[pos] == units[0]) { break; }
+                }
                 if (pos == si_prefixes.Length) pos = -1;
             }
-            if (pos < 0 || pos == 8)
+            if (pos < 0 || pos == 10)
             {
                 return;
             }
-            if (pos < 8)
+            if (pos < 10)
             {
-                exp_adjust = (double)((8 - pos) * 3);
+                exp_adjust = (double)((10 - pos) * 3);
             }
             else
             {
-                exp_adjust = (double)((pos - 8) * -3);
+                exp_adjust = (double)((pos - 10) * -3);
             }
             double ten = 10.0;
             exp_adjust = Math.Pow(ten, exp_adjust);
@@ -516,7 +518,7 @@ namespace InfoReg
                     return;
                 }
                 // short_prefixes string is character order dependent
-                string short_prefixes = "YZEPTGMk mμnpfazy";
+                string short_prefixes = "QRYZEPTGMk mμnpfazyrq";
                 pos = short_prefixes.IndexOf(string_parts[1][0]);
             }
             else
@@ -524,24 +526,25 @@ namespace InfoReg
                 // A unit has been specfied
                 // Space is used to avoid a false positive where no prefix was given.
                 // si_prefixes array is order dependent
-                string[] si_prefixes = { "yotta", "zetta", "exa", "peta", "tera", "giga", "mega", "kilo",
-                                    " ", "milli", "micro", "nano", "pico", "femto", "atto", "zepto", "yocto" };
-                pos = 0;
-                // Math.Min avoids a potential argument out of range issue
-                while (si_prefixes[pos] != units[0].Substring(0, Math.Min(si_prefixes[pos].Length, units[0].Length)) && pos < si_prefixes.Length) pos++;
+                string[] si_prefixes = { "quetta", "ronna", "yotta", "zetta", "exa", "peta", "tera", "giga", "mega", "kilo",
+                        "", "milli", "micro", "nano", "pico", "femto", "atto", "zepto", "yocto", "ronto", "quecto" };
+                for (pos = 0; pos < si_prefixes.Length; pos++)
+                {
+                    if (si_prefixes[pos] == units[0]) { break; }
+                }
                 if (pos == si_prefixes.Length) pos = -1;
             }
-            if (pos < 0 || pos == 8)
+            if (pos < 0 || pos == 10)
             {
                 return;
             }
-            if (pos < 8)
+            if (pos < 10)
             {
-                exp_adjust = (float)((8 - pos) * 3);
+                exp_adjust = (float)((10 - pos) * 3);
             }
             else
             {
-                exp_adjust = (float)((pos - 8) * -3);
+                exp_adjust = (float)((pos - 10) * -3);
             }
             float ten = (float)10.0;
             f_num *= MathF.Pow(ten, exp_adjust);

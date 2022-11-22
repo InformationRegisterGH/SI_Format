@@ -26,7 +26,10 @@ namespace InfoRegSI
             Assert.AreEqual("9.99995E+33 litres", ans, false, AssertErrorMsg);
             val = 99.9994E-29;
             ans = InfoReg.SI_Format.Format(val, "G7", "litres");
-            Assert.AreEqual("9.99994E-28 litres", ans, false, AssertErrorMsg);
+            Assert.AreEqual("999.994 quecto-litres", ans, false, AssertErrorMsg);
+            val = 99.9994E-32;
+            ans = InfoReg.SI_Format.Format(val, "G7", "litres");
+            Assert.AreEqual("9.99994E-31 litres", ans, false, AssertErrorMsg);
             val = 45.7;
             ans = InfoReg.SI_Format.Format(val, "G7", "m");
             Assert.AreEqual("45.7 m", ans, false, AssertErrorMsg);
@@ -61,6 +64,9 @@ namespace InfoRegSI
             fval = (float)99.634e-5;
             ans = InfoReg.SI_Format.Format(fval, "G5", "Farads", SI_Format.Padding.noPaddingOrDash);
             Assert.AreEqual("996.34 microFarads", ans, false, AssertErrorMsg);
+            fval = (float)19.65e-29;
+            ans = InfoReg.SI_Format.Format(fval, "G5", "Farads", SI_Format.Padding.noPaddingOrDash);
+            Assert.AreEqual("196.5 quectoFarads", ans, false, AssertErrorMsg);
         }
 
         [TestMethod]
@@ -137,7 +143,7 @@ namespace InfoRegSI
             Assert.AreEqual(dans.ToString("N"), val.ToString("N"), true, AssertErrorMsg);
             InfoReg.SI_Format.Parse("1.234567890123456789012 mega-litres", out val);
             dans = (decimal)1234567.890123456789012;
-            Assert.AreEqual(dans.ToString("N"), val.ToString("N"), true, AssertErrorMsg);
+            Assert.AreEqual(dans.ToString("N8"), val.ToString("N8"), true, AssertErrorMsg);
             InfoReg.SI_Format.Parse("1.234567890123456789012 pico-farad", out val);
             dans = (decimal)0.00000000000123456789012;
             Assert.AreEqual(dans.ToString("N1.16"), val.ToString("N1.16"), true, AssertErrorMsg);
