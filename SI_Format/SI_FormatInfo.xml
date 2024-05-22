@@ -141,21 +141,6 @@
             strings like 10pF or 123.46 kilo-metres or 65.123 ml.
             </summary>
         </member>
-        <member name="F:InfoReg.SI_Format.SI_Prefixes">
-            <summary>
-            SI_Prefixes full name
-            </summary>
-        </member>
-        <member name="F:InfoReg.SI_Format.SI_ShortPrefixes">
-            <summary>
-            SI Prefixes single character
-            </summary>
-        </member>
-        <member name="F:InfoReg.SI_Format.StringShortPrefixes">
-            <summary>
-            StringShort_Prefixes
-            </summary>
-        </member>
         <member name="T:InfoReg.SI_Format.Padding">
             <summary>
             Padding is an enumerated type.

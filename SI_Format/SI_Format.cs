@@ -12,9 +12,24 @@ namespace InfoReg
     public static class SI_Format
     {
         /// <summary>
-        /// Padding is an enumberated type.
+        /// SI_Prefixes full name
+        /// </summary>
+        public static string[] SI_Prefixes = { "quetta", "ronna", "yotta", "zetta", "exa", "peta", "tera", "giga", "mega", "kilo",
+                        "", "milli", "micro", "nano", "pico", "femto", "atto", "zepto", "yocto", "ronto", "quecto" };
+        /// <summary>
+        /// SI Prefixes single character
+        /// </summary>
+        public static string[] SI_ShortPrefixes = { "Q", "R", "Y", "Z", "E", "P", "T", "G", "M", "k",
+                        "", "m", "μ", "n", "p", "f", "a", "z", "y", "r", "q" };
+        /// <summary>
+        /// StringShort_Prefixes
+        /// </summary>
+        public static string StringShortPrefixes = "QRYZEPTGMk mμnpfazyrq";
+
+        /// <summary>
+        /// Padding is an enumerated type.
         /// An enumerated value to indicate if a dash "-" is required between the SI prefix and the unit as in kilo-gram. 
-        /// Padding will also indcate if a traling space should be appended as padding.
+        /// Padding will also indicate if a trailing space should be appended as padding.
         /// </summary>
         public enum Padding
         {
@@ -95,45 +110,41 @@ namespace InfoReg
                 int prefix_choice = -(exp1 / 3) + adjust;
                 if (siunit.Length >= 3)
                 {
-                    string[] si_prefixes = { "quetta", "ronna", "yotta", "zetta", "exa", "peta", "tera", "giga", "mega", "kilo",
-                        "", "milli", "micro", "nano", "pico", "femto", "atto", "zepto", "yocto", "ronto", "quecto" };
                     switch (padding)
                     {
                         case Padding.dashonly:
                             if (prefix_choice != 10)
                             {
-                                return string.Format("{0:" + sformat + "} ", dval) + si_prefixes[prefix_choice] + "-" + siunit;
+                                return string.Format("{0:" + sformat + "} ", dval) + SI_Prefixes[prefix_choice] + "-" + siunit;
                             }
                             else
                             {
-                                return string.Format("{0:" + sformat + "} ", dval) + si_prefixes[prefix_choice] + siunit;
+                                return string.Format("{0:" + sformat + "} ", dval) + SI_Prefixes[prefix_choice] + siunit;
                             }
                         case Padding.dashWithPadding:
                             if (prefix_choice != 10)
                             {
-                                return string.Format("{0:" + sformat + "} ", dval) + si_prefixes[prefix_choice] + "-" + siunit + " ";
+                                return string.Format("{0:" + sformat + "} ", dval) + SI_Prefixes[prefix_choice] + "-" + siunit + " ";
                             }
                             else
                             {
-                                return string.Format("{0:" + sformat + "} ", dval) + si_prefixes[prefix_choice] + siunit + " ";
+                                return string.Format("{0:" + sformat + "} ", dval) + SI_Prefixes[prefix_choice] + siunit + " ";
                             }
                         case Padding.paddingOnly:
-                            return string.Format("{0:" + sformat + "} ", dval) + si_prefixes[prefix_choice] + siunit + " ";
+                            return string.Format("{0:" + sformat + "} ", dval) + SI_Prefixes[prefix_choice] + siunit + " ";
                     }
-                    return string.Format("{0:" + sformat + "} ", dval) + si_prefixes[prefix_choice] + siunit; // Padding.noPaddingOrDash
+                    return string.Format("{0:" + sformat + "} ", dval) + SI_Prefixes[prefix_choice] + siunit; // Padding.noPaddingOrDash
                 }
                 else
                 {
-                    string[] si_prefixes = { "Q", "R", "Y", "Z", "E", "P", "T", "G", "M", "k",
-                        "", "m", "μ", "n", "p", "f", "a", "z", "y", "r", "q" };
                     // A dash is not supported for short SI unit prefixes. Thus, supply with padding (a trailing space) or without
                     if (padding == Padding.dashWithPadding || padding == Padding.paddingOnly)
                     {
-                        return string.Format("{0:" + sformat + "} ", dval) + si_prefixes[-(exp1 / 3) + adjust] + siunit + " ";
+                        return string.Format("{0:" + sformat + "} ", dval) + SI_ShortPrefixes[-(exp1 / 3) + adjust] + siunit + " ";
                     }
                     else
                     {
-                        return string.Format("{0:" + sformat + "} ", dval) + si_prefixes[-(exp1 / 3) + adjust] + siunit;
+                        return string.Format("{0:" + sformat + "} ", dval) + SI_ShortPrefixes[-(exp1 / 3) + adjust] + siunit;
                     }
                 }
             }
@@ -197,45 +208,41 @@ namespace InfoReg
                 int prefix_choice = -(exp1 / 3) + adjust;
                 if (siunit.Length >= 3)
                 {
-                    string[] si_prefixes = { "quetta", "ronna", "yotta", "zetta", "exa", "peta", "tera", "giga", "mega", "kilo",
-                        "", "milli", "micro", "nano", "pico", "femto", "atto", "zepto", "yocto", "ronto", "quecto" };
                     switch (padding)
                     {
                         case Padding.dashonly:
                             if (prefix_choice != 10)
                             {
-                                return string.Format("{0:" + sformat + "} ", ffval) + si_prefixes[prefix_choice] + "-" + siunit;
+                                return string.Format("{0:" + sformat + "} ", ffval) + SI_Prefixes[prefix_choice] + "-" + siunit;
                             }
                             else
                             {
-                                return string.Format("{0:" + sformat + "} ", ffval) + si_prefixes[prefix_choice] + siunit;
+                                return string.Format("{0:" + sformat + "} ", ffval) + SI_Prefixes[prefix_choice] + siunit;
                             }
                         case Padding.dashWithPadding:
                             if (prefix_choice != 10)
                             {
-                                return string.Format("{0:" + sformat + "} ", ffval) + si_prefixes[prefix_choice] + "-" + siunit + " ";
+                                return string.Format("{0:" + sformat + "} ", ffval) + SI_Prefixes[prefix_choice] + "-" + siunit + " ";
                             }
                             else
                             {
-                                return string.Format("{0:" + sformat + "} ", ffval) + si_prefixes[prefix_choice] + siunit + " ";
+                                return string.Format("{0:" + sformat + "} ", ffval) + SI_Prefixes[prefix_choice] + siunit + " ";
                             }
                         case Padding.paddingOnly:
-                            return string.Format("{0:" + sformat + "} ", ffval) + si_prefixes[prefix_choice] + siunit + " ";
+                            return string.Format("{0:" + sformat + "} ", ffval) + SI_Prefixes[prefix_choice] + siunit + " ";
                     }
-                    return string.Format("{0:" + sformat + "} ", ffval) + si_prefixes[prefix_choice] + siunit; // Padding.noPaddingOrDash
+                    return string.Format("{0:" + sformat + "} ", ffval) + SI_Prefixes[prefix_choice] + siunit; // Padding.noPaddingOrDash
                 }
                 else
                 {
-                    string[] si_prefixes = { "Q", "R", "Y", "Z", "E", "P", "T", "G", "M", "k",
-                        "", "m", "μ", "n", "p", "f", "a", "z", "y", "r", "q" };
                     // A dash is not supported for short SI unit prefixes. Thus, supply with padding (a trailing space) or without
                     if (padding == Padding.dashWithPadding || padding == Padding.paddingOnly)
                     {
-                        return string.Format("{0:" + sformat + "} ", ffval) + si_prefixes[-(exp1 / 3) + adjust] + siunit + " ";
+                        return string.Format("{0:" + sformat + "} ", ffval) + SI_ShortPrefixes[-(exp1 / 3) + adjust] + siunit + " ";
                     }
                     else
                     {
-                        return string.Format("{0:" + sformat + "} ", ffval) + si_prefixes[-(exp1 / 3) + adjust] + siunit;
+                        return string.Format("{0:" + sformat + "} ", ffval) + SI_ShortPrefixes[-(exp1 / 3) + adjust] + siunit;
                     }
                 }
             }
@@ -295,40 +302,36 @@ namespace InfoReg
                 decimal decimal_val1 = decimal_val / (decimal)Math.Pow(10.0, exp1);
                 if (siunit.Length >= 3)
                 {
-                    string[] si_prefixes = { "quetta", "ronna", "yotta", "zetta", "exa", "peta", "tera", "giga", "mega", "kilo",
-                        "", "milli", "micro", "nano", "pico", "femto", "atto", "zepto", "yocto", "ronto", "quecto" };
                     int prefix_choice = -(exp1 / 3) + adjust;
                     switch (padding)
                     {
                         case Padding.dashonly:
                             if (prefix_choice != 10)
                             {
-                                return string.Format("{0:" + sformat + "} ", decimal_val1) + si_prefixes[prefix_choice] + "-" + siunit;
+                                return string.Format("{0:" + sformat + "} ", decimal_val1) + SI_Prefixes[prefix_choice] + "-" + siunit;
                             }
                             else
                             {
-                                return string.Format("{0:" + sformat + "} ", decimal_val1) + si_prefixes[prefix_choice] + siunit;
+                                return string.Format("{0:" + sformat + "} ", decimal_val1) + SI_Prefixes[prefix_choice] + siunit;
                             }
                         case Padding.dashWithPadding:
                             if (prefix_choice != 10)
                             {
-                                return string.Format("{0:" + sformat + "} ", decimal_val1) + si_prefixes[prefix_choice] + "-" + siunit + " ";
+                                return string.Format("{0:" + sformat + "} ", decimal_val1) + SI_Prefixes[prefix_choice] + "-" + siunit + " ";
                             }
                             else
                             {
-                                return string.Format("{0:" + sformat + "} ", decimal_val1) + si_prefixes[prefix_choice] + siunit + " ";
+                                return string.Format("{0:" + sformat + "} ", decimal_val1) + SI_Prefixes[prefix_choice] + siunit + " ";
 
                             }
                         case Padding.paddingOnly:
-                            return string.Format("{0:" + sformat + "} ", decimal_val1) + si_prefixes[prefix_choice] + siunit + " ";
+                            return string.Format("{0:" + sformat + "} ", decimal_val1) + SI_Prefixes[prefix_choice] + siunit + " ";
                     }
-                    return string.Format("{0:" + sformat + "} ", decimal_val1) + si_prefixes[-(exp1 / 3) + adjust] + siunit; // Padding.noPaddingOrDash
+                    return string.Format("{0:" + sformat + "} ", decimal_val1) + SI_Prefixes[-(exp1 / 3) + adjust] + siunit; // Padding.noPaddingOrDash
                 }
                 else
                 {
-                    string[] si_prefixes = { "Q", "R", "Y", "Z", "E", "P", "T", "G", "M", "k",
-                        "", "m", "μ", "n", "p", "f", "a", "z", "y", "r", "q" };
-                    return string.Format("{0:" + sformat + "} ", decimal_val1) + si_prefixes[-(exp1 / 3) + adjust] + siunit;
+                    return string.Format("{0:" + sformat + "} ", decimal_val1) + SI_ShortPrefixes[-(exp1 / 3) + adjust] + siunit;
                 }
             }
         }
@@ -372,22 +375,17 @@ namespace InfoReg
                 {
                     return;
                 }
-                // short_prefixes string is character order dependent
-                string short_prefixes = "QRYZEPTGMk mμnpfazyrq";
-                pos = short_prefixes.IndexOf(string_parts[1][0]);
+                pos = StringShortPrefixes.IndexOf(string_parts[1][0]);
             }
             else
             {
                 // A unit has been specfied
                 // Space is used to avoid a false positive where no prefix was given.
-                // si_prefixes array is order dependent
-                string[] si_prefixes = { "quetta", "ronna", "yotta", "zetta", "exa", "peta", "tera", "giga", "mega", "kilo",
-                        "", "milli", "micro", "nano", "pico", "femto", "atto", "zepto", "yocto", "ronto", "quecto" };
-                for (pos = 0; pos < si_prefixes.Length; pos++)
+                for (pos = 0; pos < SI_Prefixes.Length; pos++)
                 {
-                    if (si_prefixes[pos] == units[0]) { break; }
+                    if (SI_Prefixes[pos] == units[0]) { break; }
                 }
-                if (pos == si_prefixes.Length) pos = -1;
+                if (pos == SI_Prefixes.Length) pos = -1;
             }
             if (pos < 0 || pos == 10)
             {
@@ -443,22 +441,18 @@ namespace InfoReg
                 {
                     return;
                 }
-                // short_prefixes string is character order dependent
-                string short_prefixes = "QRYZEPTGMk mμnpfazyrq";
-                pos = short_prefixes.IndexOf(string_parts[1][0]);
+
+                pos = StringShortPrefixes.IndexOf(string_parts[1][0]);
             }
             else
             {
                 // A unit has been specfied
                 // Space is used to avoid a false positive where no prefix was given.
-                // si_prefixes array is order dependent
-                string[] si_prefixes = { "quetta", "ronna", "yotta", "zetta", "exa", "peta", "tera", "giga", "mega", "kilo",
-                        "", "milli", "micro", "nano", "pico", "femto", "atto", "zepto", "yocto", "ronto", "quecto" };
-                for (pos = 0; pos < si_prefixes.Length; pos++)
+                for (pos = 0; pos < SI_Prefixes.Length; pos++)
                 {
-                    if (si_prefixes[pos] == units[0]) { break; }
+                    if (SI_Prefixes[pos] == units[0]) { break; }
                 }
-                if (pos == si_prefixes.Length) pos = -1;
+                if (pos == SI_Prefixes.Length) pos = -1;
             }
             if (pos < 0 || pos == 10)
             {
@@ -517,22 +511,18 @@ namespace InfoReg
                 {
                     return;
                 }
-                // short_prefixes string is character order dependent
-                string short_prefixes = "QRYZEPTGMk mμnpfazyrq";
-                pos = short_prefixes.IndexOf(string_parts[1][0]);
+                pos = StringShortPrefixes.IndexOf(string_parts[1][0]);
             }
             else
             {
                 // A unit has been specfied
                 // Space is used to avoid a false positive where no prefix was given.
                 // si_prefixes array is order dependent
-                string[] si_prefixes = { "quetta", "ronna", "yotta", "zetta", "exa", "peta", "tera", "giga", "mega", "kilo",
-                        "", "milli", "micro", "nano", "pico", "femto", "atto", "zepto", "yocto", "ronto", "quecto" };
-                for (pos = 0; pos < si_prefixes.Length; pos++)
+                for (pos = 0; pos < SI_Prefixes.Length; pos++)
                 {
-                    if (si_prefixes[pos] == units[0]) { break; }
+                    if (SI_Prefixes[pos] == units[0]) { break; }
                 }
-                if (pos == si_prefixes.Length) pos = -1;
+                if (pos == SI_Prefixes.Length) pos = -1;
             }
             if (pos < 0 || pos == 10)
             {
