@@ -145,6 +145,40 @@ namespace InfoRegSI
             dans = (decimal)0.00000000000123456789012;
             Assert.AreEqual(dans.ToString("N1.16"), val.ToString("N1.16"), true, AssertErrorMsg);
         }
+
+        [TestMethod]
+        public void SI_GenericFormat()
+        {
+            string AssertErrorMsg = "InfoReg.SI_Format.GenericFormat failed.";
+            string ans;
+            double val = 123.456e17;
+            ans = InfoReg.SI_Format.Format<double>(val, "G6", "metres");
+            Assert.AreEqual("12.3456 exa-metres", ans, false, AssertErrorMsg);
+            float fval = (float)123.789E-7;
+            ans = InfoReg.SI_Format.Format<float>(fval, "G4", "F");
+            Assert.AreEqual("12.38 μF", ans, false, AssertErrorMsg);
+            decimal decimal_val = decimal.Parse("1234.5678901234567890123");
+            ans = InfoReg.SI_Format.Format<decimal>(decimal_val, "G21", "grams");
+            Assert.AreEqual("1.23456789012345678901 kilo-grams", ans, false, AssertErrorMsg);
+        }
+
+        [TestMethod]
+        public void SI_GenericParse()
+        {
+            string AssertErrorMsg = "InfoReg.SI_Format.Parse<T> failed.";
+            double val;
+            InfoReg.SI_Format.Parse<double>("1.23456 km", out val);
+            double dans = 1.23456e3;
+            Assert.AreEqual(dans, val, 1.0e-6, AssertErrorMsg);
+            float fval;
+            InfoReg.SI_Format.Parse<float>("1.23456 km", out fval);
+            float fdans = (float)1.23456e3;
+            Assert.AreEqual(fdans, fval, 1.0e-4, AssertErrorMsg);
+            decimal decimal_val;
+            InfoReg.SI_Format.Parse<decimal>("1.234567890123456789012 km", out decimal_val);
+            decimal ddans = (decimal)1234.567890123456789012;
+            Assert.AreEqual(ddans.ToString("N"), decimal_val.ToString("N"), true, AssertErrorMsg);
+        }
     }
 }
 

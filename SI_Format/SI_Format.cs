@@ -52,6 +52,147 @@ namespace InfoReg
         };
 
         /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="tval"></param>
+        /// <param name="sformat"></param>
+        /// <param name="siunit"></param>
+        /// <param name="padding"></param>
+        /// <returns></returns>
+        public static String Format<T>(T tval, string sformat, string siunit, Padding padding = Padding.dashonly)
+        {
+            // Note: hecto, deca, deci, and centi are not supported
+            // si does not support numbers above 10^27 or below 10^-24 
+            // return unmodified without SI prefix units
+            double exp;
+            double dval = 0.0;
+            float fval = (float)0.0;
+            decimal decval = 0.0m;
+            decimal decval1 = 0.0m;
+            if (typeof(T) == typeof(double))
+            {
+                dval = (double)Convert.ChangeType(tval, typeof(double));
+            }
+            if(typeof(T) == typeof(float))
+            {
+                fval = (float)Convert.ChangeType(tval, typeof(float));
+                dval = (double)fval;
+            }
+            if(typeof(T) == typeof(decimal))
+            {
+                decval = (decimal)Convert.ChangeType(tval, typeof(decimal));
+                dval = (double)decval;
+            }
+            exp = Math.Log10(dval);
+            if (exp >= 33.0 || exp <= -30.0)
+            {
+                return string.Format("{0:" + sformat + "} {1}", tval, siunit);
+            }
+            else
+            {
+                int exp1 = (int)(exp / 3) * 3;
+                int adjust = 10; // Array element for no SI prefix
+                if (exp < 0)
+                {
+                    exp1 -= 3;
+                }
+                if (typeof(T) == typeof(float) || typeof(T) == typeof(double))
+                {
+                    dval = dval / Math.Pow(10.0, exp1);
+                }
+                else
+                {
+                    decval1 = decval / (decimal)Math.Pow(10.0, exp1);
+                }
+                int prefix_choice = -(exp1 / 3) + adjust;
+                if (siunit.Length >= 3)
+                {
+                    if (typeof(T) == typeof(float) || typeof(T) == typeof(double))
+                    {
+                        switch (padding)
+                        {
+                            case Padding.dashonly:
+                                if (prefix_choice != 10)
+                                {
+                                    return string.Format("{0:" + sformat + "} ", dval) + SI_Prefixes[prefix_choice] + "-" + siunit;
+                                }
+                                else
+                                {
+                                    return string.Format("{0:" + sformat + "} ", dval) + SI_Prefixes[prefix_choice] + siunit;
+                                }
+                            case Padding.dashWithPadding:
+                                if (prefix_choice != 10)
+                                {
+                                    return string.Format("{0:" + sformat + "} ", dval) + SI_Prefixes[prefix_choice] + "-" + siunit + " ";
+                                }
+                                else
+                                {
+                                    return string.Format("{0:" + sformat + "} ", dval) + SI_Prefixes[prefix_choice] + siunit + " ";
+                                }
+                            case Padding.paddingOnly:
+                                return string.Format("{0:" + sformat + "} ", dval) + SI_Prefixes[prefix_choice] + siunit + " ";
+                        }
+                        return string.Format("{0:" + sformat + "} ", dval) + SI_Prefixes[prefix_choice] + siunit; // Padding.noPaddingOrDash
+                    }
+                    else
+                    {
+                        switch (padding)
+                        {
+                            case Padding.dashonly:
+                                if (prefix_choice != 10)
+                                {
+                                    return string.Format("{0:" + sformat + "} ", decval1) + SI_Prefixes[-(exp1 / 3) + adjust] + "-" + siunit;
+                                }
+                                else
+                                {
+                                    return string.Format("{0:" + sformat + "} ", decval1) + SI_Prefixes[-(exp1 / 3) + adjust] + siunit;
+                                }
+                            case Padding.dashWithPadding:
+                                if (prefix_choice != 10)
+                                {
+                                    return string.Format("{0:" + sformat + "} ", decval1) + SI_Prefixes[-(exp1 / 3) + adjust] + "-" + siunit + " ";
+                                }
+                                else
+                                {
+                                    return string.Format("{0:" + sformat + "} ", decval1) + SI_Prefixes[-(exp1 / 3) + adjust] + siunit + " ";
+                                }
+                            case Padding.paddingOnly:
+                                return string.Format("{0:" + sformat + "} ", decval1) + SI_Prefixes[-(exp1 / 3) + adjust] + siunit + " ";
+                        }
+                        return string.Format("{0:" + sformat + "} ", decval1) + SI_Prefixes[-(exp1 / 3) + adjust] + siunit; // Padding.noPaddingOrDash
+                    }
+                }
+                else
+                {
+                    if (typeof(T) == typeof(float) || typeof(T) == typeof(double))
+                    {
+                        // A dash is not supported for short SI unit prefixes. Thus, supply with padding (a trailing space) or without
+                        if (padding == Padding.dashWithPadding || padding == Padding.paddingOnly)
+                        {
+                            return string.Format("{0:" + sformat + "} ", dval) + SI_ShortPrefixes[-(exp1 / 3) + adjust] + siunit + " ";
+                        }
+                        else
+                        {
+                            return string.Format("{0:" + sformat + "} ", dval) + SI_ShortPrefixes[-(exp1 / 3) + adjust] + siunit;
+                        }
+                    }
+                    else
+                    {
+                        if (padding == Padding.dashWithPadding || padding == Padding.paddingOnly)
+                        {
+                            return string.Format("{0:" + sformat + "} ", decval1) + SI_ShortPrefixes[-(exp1 / 3) + adjust] + siunit + " ";
+                        }
+                        else
+                        {
+                            return string.Format("{0:" + sformat + "} ", decval1) + SI_ShortPrefixes[-(exp1 / 3) + adjust] + siunit;
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// *** Depreciated use Format<double> instead *** // </double>
         /// Returns values in text in SI format. An example is 123.45km.
         /// It takes a double value and looks at its decimal exponent. The exponent 
         /// is reduced to its residue three value. It then prefixes the unit
@@ -89,68 +230,70 @@ namespace InfoReg
         /// </example>
         public static String Format(double d_val, string sformat, string siunit, Padding padding = Padding.dashonly)
         {
-            // Note: hecto, deca, deci, and centi are not supported
-            // si does not support numbers above 10^27 or below 10^-24 
-            // return unmodified without SI prefix units
-            double exp;
-            exp = Math.Log10(d_val);
-            if (exp >= 33.0 || exp <= -30.0)
-            {
-                return string.Format("{0:" + sformat + "} {1}", d_val, siunit);
-            }
-            else
-            {
-                int exp1 = (int)exp / 3 * 3;
-                int adjust = 10; // Array element for no SI prefix
-                if (exp < 0)
-                {
-                    exp1 -= 3;
-                }
-                double dval = d_val / Math.Pow(10.0, exp1);
-                int prefix_choice = -(exp1 / 3) + adjust;
-                if (siunit.Length >= 3)
-                {
-                    switch (padding)
-                    {
-                        case Padding.dashonly:
-                            if (prefix_choice != 10)
-                            {
-                                return string.Format("{0:" + sformat + "} ", dval) + SI_Prefixes[prefix_choice] + "-" + siunit;
-                            }
-                            else
-                            {
-                                return string.Format("{0:" + sformat + "} ", dval) + SI_Prefixes[prefix_choice] + siunit;
-                            }
-                        case Padding.dashWithPadding:
-                            if (prefix_choice != 10)
-                            {
-                                return string.Format("{0:" + sformat + "} ", dval) + SI_Prefixes[prefix_choice] + "-" + siunit + " ";
-                            }
-                            else
-                            {
-                                return string.Format("{0:" + sformat + "} ", dval) + SI_Prefixes[prefix_choice] + siunit + " ";
-                            }
-                        case Padding.paddingOnly:
-                            return string.Format("{0:" + sformat + "} ", dval) + SI_Prefixes[prefix_choice] + siunit + " ";
-                    }
-                    return string.Format("{0:" + sformat + "} ", dval) + SI_Prefixes[prefix_choice] + siunit; // Padding.noPaddingOrDash
-                }
-                else
-                {
-                    // A dash is not supported for short SI unit prefixes. Thus, supply with padding (a trailing space) or without
-                    if (padding == Padding.dashWithPadding || padding == Padding.paddingOnly)
-                    {
-                        return string.Format("{0:" + sformat + "} ", dval) + SI_ShortPrefixes[-(exp1 / 3) + adjust] + siunit + " ";
-                    }
-                    else
-                    {
-                        return string.Format("{0:" + sformat + "} ", dval) + SI_ShortPrefixes[-(exp1 / 3) + adjust] + siunit;
-                    }
-                }
-            }
+            return Format<double>(d_val, sformat, siunit, padding);
+            //// Note: hecto, deca, deci, and centi are not supported
+            //// si does not support numbers above 10^27 or below 10^-24 
+            //// return unmodified without SI prefix units
+            //double exp;
+            //exp = Math.Log10(d_val);
+            //if (exp >= 33.0 || exp <= -30.0)
+            //{
+            //    return string.Format("{0:" + sformat + "} {1}", d_val, siunit);
+            //}
+            //else
+            //{
+            //    int exp1 = (int)exp / 3 * 3;
+            //    int adjust = 10; // Array element for no SI prefix
+            //    if (exp < 0)
+            //    {
+            //        exp1 -= 3;
+            //    }
+            //    double dval = d_val / Math.Pow(10.0, exp1);
+            //    int prefix_choice = -(exp1 / 3) + adjust;
+            //    if (siunit.Length >= 3)
+            //    {
+            //        switch (padding)
+            //        {
+            //            case Padding.dashonly:
+            //                if (prefix_choice != 10)
+            //                {
+            //                    return string.Format("{0:" + sformat + "} ", dval) + SI_Prefixes[prefix_choice] + "-" + siunit;
+            //                }
+            //                else
+            //                {
+            //                    return string.Format("{0:" + sformat + "} ", dval) + SI_Prefixes[prefix_choice] + siunit;
+            //                }
+            //            case Padding.dashWithPadding:
+            //                if (prefix_choice != 10)
+            //                {
+            //                    return string.Format("{0:" + sformat + "} ", dval) + SI_Prefixes[prefix_choice] + "-" + siunit + " ";
+            //                }
+            //                else
+            //                {
+            //                    return string.Format("{0:" + sformat + "} ", dval) + SI_Prefixes[prefix_choice] + siunit + " ";
+            //                }
+            //            case Padding.paddingOnly:
+            //                return string.Format("{0:" + sformat + "} ", dval) + SI_Prefixes[prefix_choice] + siunit + " ";
+            //        }
+            //        return string.Format("{0:" + sformat + "} ", dval) + SI_Prefixes[prefix_choice] + siunit; // Padding.noPaddingOrDash
+            //    }
+            //    else
+            //    {
+            //        // A dash is not supported for short SI unit prefixes. Thus, supply with padding (a trailing space) or without
+            //        if (padding == Padding.dashWithPadding || padding == Padding.paddingOnly)
+            //        {
+            //            return string.Format("{0:" + sformat + "} ", dval) + SI_ShortPrefixes[-(exp1 / 3) + adjust] + siunit + " ";
+            //        }
+            //        else
+            //        {
+            //            return string.Format("{0:" + sformat + "} ", dval) + SI_ShortPrefixes[-(exp1 / 3) + adjust] + siunit;
+            //        }
+            //    }
+            //}
         }
 
         /// <summary>
+        /// *** Depreciated use Format<float> instead *** // </float>
         /// Returns values in a text SI format. An example is 123.45km.
         /// It takes a float value and looks at its decimal exponent. The exponent 
         /// is reduced to its residue three value. It then prefixes the unit
@@ -187,68 +330,70 @@ namespace InfoReg
 
         public static string Format(float f_val, string sformat, string siunit, Padding padding = Padding.dashonly)
         {
-            // Note: hecto, deca, deci, and centi are not supported
-            // si does not support numbers above 10^27 or below 10^-24 
-            // return unmodified without SI prefix units
-            float exp;
-            exp = System.MathF.Log10(f_val);
-            if (exp >= 33.0 || exp <= -30.0)
-            {
-                return string.Format("{0:" + sformat + "} {1}", f_val, siunit);
-            }
-            else
-            {
-                int exp1 = (int)exp / 3 * 3;
-                int adjust = 10; // Array element for no SI prefix
-                if (exp < 0)
-                {
-                    exp1 -= 3;
-                }
-                float ffval = f_val / MathF.Pow(10.0f, exp1);
-                int prefix_choice = -(exp1 / 3) + adjust;
-                if (siunit.Length >= 3)
-                {
-                    switch (padding)
-                    {
-                        case Padding.dashonly:
-                            if (prefix_choice != 10)
-                            {
-                                return string.Format("{0:" + sformat + "} ", ffval) + SI_Prefixes[prefix_choice] + "-" + siunit;
-                            }
-                            else
-                            {
-                                return string.Format("{0:" + sformat + "} ", ffval) + SI_Prefixes[prefix_choice] + siunit;
-                            }
-                        case Padding.dashWithPadding:
-                            if (prefix_choice != 10)
-                            {
-                                return string.Format("{0:" + sformat + "} ", ffval) + SI_Prefixes[prefix_choice] + "-" + siunit + " ";
-                            }
-                            else
-                            {
-                                return string.Format("{0:" + sformat + "} ", ffval) + SI_Prefixes[prefix_choice] + siunit + " ";
-                            }
-                        case Padding.paddingOnly:
-                            return string.Format("{0:" + sformat + "} ", ffval) + SI_Prefixes[prefix_choice] + siunit + " ";
-                    }
-                    return string.Format("{0:" + sformat + "} ", ffval) + SI_Prefixes[prefix_choice] + siunit; // Padding.noPaddingOrDash
-                }
-                else
-                {
-                    // A dash is not supported for short SI unit prefixes. Thus, supply with padding (a trailing space) or without
-                    if (padding == Padding.dashWithPadding || padding == Padding.paddingOnly)
-                    {
-                        return string.Format("{0:" + sformat + "} ", ffval) + SI_ShortPrefixes[-(exp1 / 3) + adjust] + siunit + " ";
-                    }
-                    else
-                    {
-                        return string.Format("{0:" + sformat + "} ", ffval) + SI_ShortPrefixes[-(exp1 / 3) + adjust] + siunit;
-                    }
-                }
-            }
+            return Format<float>(f_val, sformat, siunit, padding);
+            //// Note: hecto, deca, deci, and centi are not supported
+            //// si does not support numbers above 10^27 or below 10^-24 
+            //// return unmodified without SI prefix units
+            //float exp;
+            //exp = System.MathF.Log10(f_val);
+            //if (exp >= 33.0 || exp <= -30.0)
+            //{
+            //    return string.Format("{0:" + sformat + "} {1}", f_val, siunit);
+            //}
+            //else
+            //{
+            //    int exp1 = (int)exp / 3 * 3;
+            //    int adjust = 10; // Array element for no SI prefix
+            //    if (exp < 0)
+            //    {
+            //        exp1 -= 3;
+            //    }
+            //    float ffval = f_val / MathF.Pow(10.0f, exp1);
+            //    int prefix_choice = -(exp1 / 3) + adjust;
+            //    if (siunit.Length >= 3)
+            //    {
+            //        switch (padding)
+            //        {
+            //            case Padding.dashonly:
+            //                if (prefix_choice != 10)
+            //                {
+            //                    return string.Format("{0:" + sformat + "} ", ffval) + SI_Prefixes[prefix_choice] + "-" + siunit;
+            //                }
+            //                else
+            //                {
+            //                    return string.Format("{0:" + sformat + "} ", ffval) + SI_Prefixes[prefix_choice] + siunit;
+            //                }
+            //            case Padding.dashWithPadding:
+            //                if (prefix_choice != 10)
+            //                {
+            //                    return string.Format("{0:" + sformat + "} ", ffval) + SI_Prefixes[prefix_choice] + "-" + siunit + " ";
+            //                }
+            //                else
+            //                {
+            //                    return string.Format("{0:" + sformat + "} ", ffval) + SI_Prefixes[prefix_choice] + siunit + " ";
+            //                }
+            //            case Padding.paddingOnly:
+            //                return string.Format("{0:" + sformat + "} ", ffval) + SI_Prefixes[prefix_choice] + siunit + " ";
+            //        }
+            //        return string.Format("{0:" + sformat + "} ", ffval) + SI_Prefixes[prefix_choice] + siunit; // Padding.noPaddingOrDash
+            //    }
+            //    else
+            //    {
+            //        // A dash is not supported for short SI unit prefixes. Thus, supply with padding (a trailing space) or without
+            //        if (padding == Padding.dashWithPadding || padding == Padding.paddingOnly)
+            //        {
+            //            return string.Format("{0:" + sformat + "} ", ffval) + SI_ShortPrefixes[-(exp1 / 3) + adjust] + siunit + " ";
+            //        }
+            //        else
+            //        {
+            //            return string.Format("{0:" + sformat + "} ", ffval) + SI_ShortPrefixes[-(exp1 / 3) + adjust] + siunit;
+            //        }
+            //    }
+            //}
         }
 
         /// <summary>
+        /// *** Depreciated use Format<decimal> instead *** // </decimal>
         /// Returns values in text in SI format. An example is 123.45km.
         /// It takes a decimal value and looks at its decimal exponent. The exponent 
         /// is reduced to its residue three value. It then prefixes the unit
@@ -286,82 +431,94 @@ namespace InfoReg
 
         public static string Format(decimal decimal_val, string sformat, string siunit, Padding padding = Padding.dashonly)
         {
-            double exp = Math.Log10((double)decimal_val);
-            if (exp >= 33.0 || exp <= -30.0)
-            {
-                return string.Format("{0:" + sformat + "} {1}", decimal_val, siunit);
-            }
-            else
-            {
-                int exp1 = (int)exp / 3 * 3;
-                int adjust = 10;  // Array element for no SI prefix
-                if (exp < 0)
-                {
-                    exp1 -= 3;
-                }
-                decimal decimal_val1 = decimal_val / (decimal)Math.Pow(10.0, exp1);
-                if (siunit.Length >= 3)
-                {
-                    int prefix_choice = -(exp1 / 3) + adjust;
-                    switch (padding)
-                    {
-                        case Padding.dashonly:
-                            if (prefix_choice != 10)
-                            {
-                                return string.Format("{0:" + sformat + "} ", decimal_val1) + SI_Prefixes[prefix_choice] + "-" + siunit;
-                            }
-                            else
-                            {
-                                return string.Format("{0:" + sformat + "} ", decimal_val1) + SI_Prefixes[prefix_choice] + siunit;
-                            }
-                        case Padding.dashWithPadding:
-                            if (prefix_choice != 10)
-                            {
-                                return string.Format("{0:" + sformat + "} ", decimal_val1) + SI_Prefixes[prefix_choice] + "-" + siunit + " ";
-                            }
-                            else
-                            {
-                                return string.Format("{0:" + sformat + "} ", decimal_val1) + SI_Prefixes[prefix_choice] + siunit + " ";
+            return Format<decimal>(decimal_val, sformat, siunit, padding);
+            //double exp = Math.Log10((double)decimal_val);
+            //if (exp >= 33.0 || exp <= -30.0)
+            //{
+            //    return string.Format("{0:" + sformat + "} {1}", decimal_val, siunit);
+            //}
+            //else
+            //{
+            //    int exp1 = (int)exp / 3 * 3;
+            //    int adjust = 10;  // Array element for no SI prefix
+            //    if (exp < 0)
+            //    {
+            //        exp1 -= 3;
+            //    }
+            //    decimal decimal_val1 = decimal_val / (decimal)Math.Pow(10.0, exp1);
+            //    if (siunit.Length >= 3)
+            //    {
+            //        int prefix_choice = -(exp1 / 3) + adjust;
+            //        switch (padding)
+            //        {
+            //            case Padding.dashonly:
+            //                if (prefix_choice != 10)
+            //                {
+            //                    return string.Format("{0:" + sformat + "} ", decimal_val1) + SI_Prefixes[prefix_choice] + "-" + siunit;
+            //                }
+            //                else
+            //                {
+            //                    return string.Format("{0:" + sformat + "} ", decimal_val1) + SI_Prefixes[prefix_choice] + siunit;
+            //                }
+            //            case Padding.dashWithPadding:
+            //                if (prefix_choice != 10)
+            //                {
+            //                    return string.Format("{0:" + sformat + "} ", decimal_val1) + SI_Prefixes[prefix_choice] + "-" + siunit + " ";
+            //                }
+            //                else
+            //                {
+            //                    return string.Format("{0:" + sformat + "} ", decimal_val1) + SI_Prefixes[prefix_choice] + siunit + " ";
 
-                            }
-                        case Padding.paddingOnly:
-                            return string.Format("{0:" + sformat + "} ", decimal_val1) + SI_Prefixes[prefix_choice] + siunit + " ";
-                    }
-                    return string.Format("{0:" + sformat + "} ", decimal_val1) + SI_Prefixes[-(exp1 / 3) + adjust] + siunit; // Padding.noPaddingOrDash
-                }
-                else
-                {
-                    return string.Format("{0:" + sformat + "} ", decimal_val1) + SI_ShortPrefixes[-(exp1 / 3) + adjust] + siunit;
-                }
-            }
+            //                }
+            //            case Padding.paddingOnly:
+            //                return string.Format("{0:" + sformat + "} ", decimal_val1) + SI_Prefixes[prefix_choice] + siunit + " ";
+            //        }
+            //        return string.Format("{0:" + sformat + "} ", decimal_val1) + SI_Prefixes[-(exp1 / 3) + adjust] + siunit; // Padding.noPaddingOrDash
+            //    }
+            //    else
+            //    {
+            //        return string.Format("{0:" + sformat + "} ", decimal_val1) + SI_ShortPrefixes[-(exp1 / 3) + adjust] + siunit;
+            //    }
+            //}
         }
 
         /// <summary>
-        /// Takes an SI formatted value like "12.34 km" and returns a double with the
-        /// value 1.234e4. A String "10pF" would be returned as a double value 1e-11.
-        /// Example: ...
-        ///          using InfoReg;
-        ///          ...
-        ///          Double val;
-        ///          InfoReg.SI_Format.Parse("1.23456 km", out val);
-        ///          => val has the value 1.23456e3
-        ///   
+        /// Parse<T> is a generic function that takes a string value like "12.34 km" and returns a numeric value // </T>
         /// </summary>
-        /// <param name="si_value">A string value like 12.345MHz</param>
-        /// <param name="dnum">A double that will be assigned the parsed value from the SI formatted string</param>
-        /// <returns>A double value adjusted for the SI prefix value.</returns>
-        public static void Parse(string si_value, out double dnum)
+        /// <typeparam name="T"></typeparam>
+        /// <param name="si_value"></param>
+        /// <param name="tnum"></param>
+        /// <exception cref="Exception"></exception>
+        public static void Parse<T>(string si_value, out T tnum)
         {
             // si_value is expected as 999.9999 km or 999.99999 kilo-metres
             // get numerical value
+            double? dnum = null;
+            float? fnum = null;
+            decimal? decnum = null;
+            tnum = (T)Convert.ChangeType(0, typeof(T));
             string[] string_parts = si_value.Trim().Split(' ');
             try
             {
-                dnum = double.Parse(string_parts[0]);
+                if(typeof(T) == typeof(double))
+                {
+                    dnum = double.Parse(string_parts[0]);
+                    tnum = (T)Convert.ChangeType(dnum, typeof(T));
+                }
+                if (typeof(T) == typeof(float))
+                {
+                    fnum = float.Parse(string_parts[0]);
+                    tnum = (T)Convert.ChangeType(fnum, typeof(T));
+                }
+                if (typeof(T) == typeof(decimal))
+                {
+                    decnum = decimal.Parse(string_parts[0]);
+                    tnum = (T)Convert.ChangeType(decnum, typeof(T));
+                }
             }
             catch (Exception e1)
             {
-                throw new Exception("Error: SI_ParseDouble failed to parse number part from " + si_value, e1);
+                throw new Exception("Error: SI_Parse<" + typeof(T).Name + "> failed to parse number part from " + si_value, e1);
             }
 
             // Parse units to get the exponent multiplier
@@ -399,11 +556,94 @@ namespace InfoReg
             {
                 exp_adjust = (pos - 10.0) * -3.0;
             }
-            double ten = 10.0;
-            dnum *= Math.Pow(ten, exp_adjust);
+            if (typeof(T) == typeof(double))
+            {
+                dnum *= Math.Pow(10.0, exp_adjust);
+                tnum = (T)Convert.ChangeType(dnum, typeof(T));
+            }
+            if (typeof(T) == typeof(float))
+            {
+                fnum *= (float)MathF.Pow(10.0f, (float)exp_adjust);
+                tnum = (T)Convert.ChangeType(fnum, typeof(T));
+            }
+            if (typeof(T) == typeof(decimal))
+            {
+                decnum *= (decimal)Math.Pow(10.0, exp_adjust);
+                tnum = (T)Convert.ChangeType(decnum, typeof(T));
+            }
         }
 
         /// <summary>
+        /// *** Depreciated use Parse<double> instead *** // </double>
+        /// Takes an SI formatted value like "12.34 km" and returns a double with the
+        /// value 1.234e4. A String "10pF" would be returned as a double value 1e-11.
+        /// Example: ...
+        ///          using InfoReg;
+        ///          ...
+        ///          Double val;
+        ///          InfoReg.SI_Format.Parse("1.23456 km", out val);
+        ///          => val has the value 1.23456e3
+        ///   
+        /// </summary>
+        /// <param name="si_value">A string value like 12.345MHz</param>
+        /// <param name="num">A double that will be assigned the parsed value from the SI formatted string</param>
+        /// <returns>A double value adjusted for the SI prefix value.</returns>
+        public static void Parse(string si_value, out double num)
+        {
+            Parse<double>(si_value, out num);
+            //// si_value is expected as 999.9999 km or 999.99999 kilo-metres
+            //// get numerical value
+            //string[] string_parts = si_value.Trim().Split(' ');
+            //try
+            //{
+            //    dnum = double.Parse(string_parts[0]);
+            //}
+            //catch (Exception e1)
+            //{
+            //    throw new Exception("Error: SI_ParseDouble failed to parse number part from " + si_value, e1);
+            //}
+
+            //// Parse units to get the exponent multiplier
+            //string[] units = string_parts[1].Split('-'); // if units is null assume short types like kg
+            //double exp_adjust;
+            //int pos;
+            //if (units.Length == 1) // implies short notation
+            //{
+            //    // m for metres on its own no need to adjust exponent
+            //    if (units[0].Length == 1)
+            //    {
+            //        return;
+            //    }
+            //    pos = StringShortPrefixes.IndexOf(string_parts[1][0]);
+            //}
+            //else
+            //{
+            //    // A unit has been specfied
+            //    // Space is used to avoid a false positive where no prefix was given.
+            //    for (pos = 0; pos < SI_Prefixes.Length; pos++)
+            //    {
+            //        if (SI_Prefixes[pos] == units[0]) { break; }
+            //    }
+            //    if (pos == SI_Prefixes.Length) pos = -1;
+            //}
+            //if (pos < 0 || pos == 10)
+            //{
+            //    return;
+            //}
+            //if (pos < 10)
+            //{
+            //    exp_adjust = (10.0 - pos) * 3.0;
+            //}
+            //else
+            //{
+            //    exp_adjust = (pos - 10.0) * -3.0;
+            //}
+            //double ten = 10.0;
+            //dnum *= Math.Pow(ten, exp_adjust);
+        }
+
+        /// <summary>
+        /// *** Depreciated use Parse<decimal> instead *** // </decimal>
         /// Takes an SI formatted value like "12.34 km" and returns a decimal with the
         /// value 1.234e4. A String "10pF" would be returned as a decimal value 1e-11.
         /// Example: ...
@@ -414,64 +654,66 @@ namespace InfoReg
         ///          => val has the value 1.23456e3
         /// </summary>
         /// <param name="si_value">A string value like 12.345MHz</param>
-        /// <param name="dnum">A decimal that will be assigned the parsed value from the SI formatted string</param>
+        /// <param name="num">A decimal that will be assigned the parsed value from the SI formatted string</param>
         /// <returns>A decimal value adjusted for the SI prefix value.</returns>
-        public static void Parse(string si_value, out decimal dnum)
+        public static void Parse(string si_value, out decimal num)
         {
-            // si_vale is expected as 999.9999 km or 999.99999 kilo-metres
-            // get numerical value
-            string[] string_parts = si_value.Trim().Split(' ');
-            try
-            {
-                dnum = decimal.Parse(string_parts[0]);
-            }
-            catch (Exception e1)
-            {
-                throw new Exception("Error: SI_ParseDecimal failed to parse number part from " + si_value, e1);
-            }
+            Parse<decimal>(si_value, out num);
+            //// si_vale is expected as 999.9999 km or 999.99999 kilo-metres
+            //// get numerical value
+            //string[] string_parts = si_value.Trim().Split(' ');
+            //try
+            //{
+            //    dnum = decimal.Parse(string_parts[0]);
+            //}
+            //catch (Exception e1)
+            //{
+            //    throw new Exception("Error: SI_ParseDecimal failed to parse number part from " + si_value, e1);
+            //}
 
-            // Parse units to get the exponent multiplier
-            string[] units = string_parts[1].Split('-'); // if units is null assume short types like kg
-            double exp_adjust;
-            int pos;
-            if (units.Length == 1) // implies short notation
-            {
-                // m for metres on its own no need to adjust exponent
-                if (units[0].Length == 1)
-                {
-                    return;
-                }
+            //// Parse units to get the exponent multiplier
+            //string[] units = string_parts[1].Split('-'); // if units is null assume short types like kg
+            //double exp_adjust;
+            //int pos;
+            //if (units.Length == 1) // implies short notation
+            //{
+            //    // m for metres on its own no need to adjust exponent
+            //    if (units[0].Length == 1)
+            //    {
+            //        return;
+            //    }
 
-                pos = StringShortPrefixes.IndexOf(string_parts[1][0]);
-            }
-            else
-            {
-                // A unit has been specfied
-                // Space is used to avoid a false positive where no prefix was given.
-                for (pos = 0; pos < SI_Prefixes.Length; pos++)
-                {
-                    if (SI_Prefixes[pos] == units[0]) { break; }
-                }
-                if (pos == SI_Prefixes.Length) pos = -1;
-            }
-            if (pos < 0 || pos == 10)
-            {
-                return;
-            }
-            if (pos < 10)
-            {
-                exp_adjust = (double)((10 - pos) * 3);
-            }
-            else
-            {
-                exp_adjust = (double)((pos - 10) * -3);
-            }
-            double ten = 10.0;
-            exp_adjust = Math.Pow(ten, exp_adjust);
-            dnum *= (decimal)exp_adjust;
+            //    pos = StringShortPrefixes.IndexOf(string_parts[1][0]);
+            //}
+            //else
+            //{
+            //    // A unit has been specfied
+            //    // Space is used to avoid a false positive where no prefix was given.
+            //    for (pos = 0; pos < SI_Prefixes.Length; pos++)
+            //    {
+            //        if (SI_Prefixes[pos] == units[0]) { break; }
+            //    }
+            //    if (pos == SI_Prefixes.Length) pos = -1;
+            //}
+            //if (pos < 0 || pos == 10)
+            //{
+            //    return;
+            //}
+            //if (pos < 10)
+            //{
+            //    exp_adjust = (double)((10 - pos) * 3);
+            //}
+            //else
+            //{
+            //    exp_adjust = (double)((pos - 10) * -3);
+            //}
+            //double ten = 10.0;
+            //exp_adjust = Math.Pow(ten, exp_adjust);
+            //dnum *= (decimal)exp_adjust;
         }
 
         /// <summary>
+        /// *** Depreciated use Parse<float> instead *** //</float>
         /// Takes an SI formatted value like "12.34 km" and returns a float with the
         /// value 1.234e4. A String "10pF" would be returned as a float value 1e-11.
         /// Example: ...
@@ -483,61 +725,62 @@ namespace InfoReg
         /// 
         /// </summary>
         /// <param name="si_value">A string value like 12.345MHz</param>
-        /// <param name="f_num">A float that will be assigned the parsed value from the SI formatted string</param>
+        /// <param name="num">A float that will be assigned the parsed value from the SI formatted string</param>
         /// <returns>A float value adjusted for the SI prefix value.</returns>
 
-        public static void Parse(string si_value, out float f_num)
+        public static void Parse(string si_value, out float num)
         {
-            // si_value is expected as 999.9999 km or 999.99999 kilo-metres
-            // get numerical value
-            string[] string_parts = si_value.Trim().Split(' ');
-            try
-            {
-                f_num = float.Parse(string_parts[0]);
-            }
-            catch (Exception e1)
-            {
-                throw new Exception("Error: SI_ParseDouble failed to parse number part from " + si_value, e1);
-            }
+            Parse<float>(si_value, out num);
+            //// si_value is expected as 999.9999 km or 999.99999 kilo-metres
+            //// get numerical value
+            //string[] string_parts = si_value.Trim().Split(' ');
+            //try
+            //{
+            //    f_num = float.Parse(string_parts[0]);
+            //}
+            //catch (Exception e1)
+            //{
+            //    throw new Exception("Error: SI_ParseDouble failed to parse number part from " + si_value, e1);
+            //}
 
-            // Parse units to get the exponent multiplier
-            string[] units = string_parts[1].Split('-'); // if units is null assume short types like kg
-            float exp_adjust;
-            int pos;
-            if (units.Length == 1) // implies short notation
-            {
-                // m for metres on its own no need to adjust exponent
-                if (units[0].Length == 1)
-                {
-                    return;
-                }
-                pos = StringShortPrefixes.IndexOf(string_parts[1][0]);
-            }
-            else
-            {
-                // A unit has been specfied
-                // Space is used to avoid a false positive where no prefix was given.
-                // si_prefixes array is order dependent
-                for (pos = 0; pos < SI_Prefixes.Length; pos++)
-                {
-                    if (SI_Prefixes[pos] == units[0]) { break; }
-                }
-                if (pos == SI_Prefixes.Length) pos = -1;
-            }
-            if (pos < 0 || pos == 10)
-            {
-                return;
-            }
-            if (pos < 10)
-            {
-                exp_adjust = (float)((10 - pos) * 3);
-            }
-            else
-            {
-                exp_adjust = (float)((pos - 10) * -3);
-            }
-            float ten = (float)10.0;
-            f_num *= MathF.Pow(ten, exp_adjust);
+            //// Parse units to get the exponent multiplier
+            //string[] units = string_parts[1].Split('-'); // if units is null assume short types like kg
+            //float exp_adjust;
+            //int pos;
+            //if (units.Length == 1) // implies short notation
+            //{
+            //    // m for metres on its own no need to adjust exponent
+            //    if (units[0].Length == 1)
+            //    {
+            //        return;
+            //    }
+            //    pos = StringShortPrefixes.IndexOf(string_parts[1][0]);
+            //}
+            //else
+            //{
+            //    // A unit has been specfied
+            //    // Space is used to avoid a false positive where no prefix was given.
+            //    // si_prefixes array is order dependent
+            //    for (pos = 0; pos < SI_Prefixes.Length; pos++)
+            //    {
+            //        if (SI_Prefixes[pos] == units[0]) { break; }
+            //    }
+            //    if (pos == SI_Prefixes.Length) pos = -1;
+            //}
+            //if (pos < 0 || pos == 10)
+            //{
+            //    return;
+            //}
+            //if (pos < 10)
+            //{
+            //    exp_adjust = (float)((10 - pos) * 3);
+            //}
+            //else
+            //{
+            //    exp_adjust = (float)((pos - 10) * -3);
+            //}
+            //float ten = (float)10.0;
+            //f_num *= MathF.Pow(ten, exp_adjust);
         }
     }
 }
