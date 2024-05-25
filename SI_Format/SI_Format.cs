@@ -52,13 +52,44 @@ namespace InfoReg
         };
 
         /// <summary>
-        /// 
+        /// Format<typeparamref name="T"/> // T may be float, double, or decimal
         /// </summary>
         /// <param name="tval"></param>
         /// <param name="sformat"></param>
         /// <param name="siunit"></param>
         /// <param name="padding"></param>
-        /// <returns></returns>
+        /// <returns>Formatted string e.g. "9.46 peta-metres"</returns>
+        /// 
+        /// Returns values in text in SI format. An example is 123.45km.
+        /// It takes tval and looks at its decimal exponent. The exponent 
+        /// is reduced to its residue three value. It then prefixes the unit
+        /// passed in with the appropriate SI prefix.
+        /// 
+        /// "quetta", "ronna", "yotta", "zetta", "exa", "peta", "tera", "giga", "mega", "kilo",
+        /// "", "milli", "micro", "nano", "pico", "femto", "atto", "zepto", "yocto", "ronto", "quecto"
+        /// 
+        /// If siunit is two or less characters the return will use short SI
+        /// prefixes like:
+        /// "Q", "R", "Y", "Z", "E", "P", "T", "G", "M", "k",
+        /// "", "m", "μ", "n", "p", "f", "a", "z", "y", "r", "q"
+        /// 
+        /// No prefix is needed if the value of d_val lies in the range 0.0 to just under 1000.0.
+        /// 
+        /// Note: hecto, deca, deci, and centi are not supported.
+        ///       SI does not support numbers above 10^33 or below 10^-30 
+        ///       and any such value will be returned unmodified without SI prefix units.
+        ///       
+
+        /// <example>
+        ///          using InfoReg;
+        ///          ...
+        ///          String ans;
+        ///          double val = 123.456e17;
+        ///          ans = InfoReg.SI_Format.Format(val, "G6", "metres");
+        ///          => ans contains: "12.3456 exa-metres"
+        ///          ans = InfoReg.SI_Format.Format(val, "G6", "metres", noPaddingOrDash);
+        ///          => ans contains: "12.3456 exametres"
+        /// </example>
         public static String Format<T>(T tval, string sformat, string siunit, Padding padding = Padding.dashonly)
         {
             // Note: hecto, deca, deci, and centi are not supported
@@ -228,6 +259,7 @@ namespace InfoReg
         ///          ans = InfoReg.SI_Format.Format(val, "G6", "metres", noPaddingOrDash);
         ///          => ans contains: "12.3456 exametres"
         /// </example>
+        [Obsolete("Please use Format<double>(double d_val, string sformat, string siunit, Padding padding = Padding.dashonly)")]
         public static String Format(double d_val, string sformat, string siunit, Padding padding = Padding.dashonly)
         {
             return Format<double>(d_val, sformat, siunit, padding);
@@ -328,6 +360,7 @@ namespace InfoReg
         /// <param name="padding">Padding.dashOnly | Padding.dashWithPadding | Padding.paddingOnly | Padding.noPaddingOrDash</param>
         /// <returns>Formatted string e.g. "9.46 peta-metres"</returns>
 
+        [Obsolete("Please use Format<float>(float f_val, string sformat, string siunit, Padding padding = Padding.dashonly)")]
         public static string Format(float f_val, string sformat, string siunit, Padding padding = Padding.dashonly)
         {
             return Format<float>(f_val, sformat, siunit, padding);
@@ -428,7 +461,7 @@ namespace InfoReg
         /// <param name="padding">Padding.dashOnly | Padding.dashWithPadding | Padding.paddingOnly | Padding.noPaddingOrDash</param>
         /// <returns>Formatted string e.g. "9.46 pm"</returns>
 
-
+        [Obsolete("Please use Format<decimal>(decimal decimal_val, string sformat, string siunit, Padding padding = Padding.dashonly)")]
         public static string Format(decimal decimal_val, string sformat, string siunit, Padding padding = Padding.dashonly)
         {
             return Format<decimal>(decimal_val, sformat, siunit, padding);
@@ -483,12 +516,21 @@ namespace InfoReg
         }
 
         /// <summary>
-        /// Parse<T> is a generic function that takes a string value like "12.34 km" and returns a numeric value // </T>
+        /// Parse<typeparamref name="T"/> is a generic function that takes a string value like "12.34 km" and returns a numeric value
+        /// Takes an SI formatted value like "12.34 km" and yields an out parameter of type double, float, or decimal with the
+        /// value 1.234e4. A String "10pF" would be returned as a numeric value 1e-11.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="si_value"></param>
         /// <param name="tnum"></param>
         /// <exception cref="Exception"></exception>
+        /// Example: ...
+        ///          using InfoReg;
+        ///          ...
+        ///          Double val;
+        ///          InfoReg.SI_Format.Parse("1.23456 km", out val);
+        ///          => val has the value 1.23456e3
+        
         public static void Parse<T>(string si_value, out T tnum)
         {
             // si_value is expected as 999.9999 km or 999.99999 kilo-metres
@@ -574,7 +616,7 @@ namespace InfoReg
         }
 
         /// <summary>
-        /// *** Depreciated use Parse<double> instead *** // </double>
+        /// *** Depreciated use Parse<T> instead *** // </T>>
         /// Takes an SI formatted value like "12.34 km" and returns a double with the
         /// value 1.234e4. A String "10pF" would be returned as a double value 1e-11.
         /// Example: ...
@@ -588,6 +630,8 @@ namespace InfoReg
         /// <param name="si_value">A string value like 12.345MHz</param>
         /// <param name="num">A double that will be assigned the parsed value from the SI formatted string</param>
         /// <returns>A double value adjusted for the SI prefix value.</returns>
+
+        [Obsolete("Please use Parse<double>(string si_value, out num)")]
         public static void Parse(string si_value, out double num)
         {
             Parse<double>(si_value, out num);
@@ -643,7 +687,7 @@ namespace InfoReg
         }
 
         /// <summary>
-        /// *** Depreciated use Parse<decimal> instead *** // </decimal>
+        /// *** Depreciated use Parse<T> instead *** // </T>
         /// Takes an SI formatted value like "12.34 km" and returns a decimal with the
         /// value 1.234e4. A String "10pF" would be returned as a decimal value 1e-11.
         /// Example: ...
@@ -656,6 +700,8 @@ namespace InfoReg
         /// <param name="si_value">A string value like 12.345MHz</param>
         /// <param name="num">A decimal that will be assigned the parsed value from the SI formatted string</param>
         /// <returns>A decimal value adjusted for the SI prefix value.</returns>
+
+        [Obsolete("Please use Parse<decimal>(string si_value, out num)")]
         public static void Parse(string si_value, out decimal num)
         {
             Parse<decimal>(si_value, out num);
@@ -713,7 +759,7 @@ namespace InfoReg
         }
 
         /// <summary>
-        /// *** Depreciated use Parse<float> instead *** //</float>
+        /// *** Depreciated use Parse<T> instead *** //</T>
         /// Takes an SI formatted value like "12.34 km" and returns a float with the
         /// value 1.234e4. A String "10pF" would be returned as a float value 1e-11.
         /// Example: ...
@@ -728,6 +774,7 @@ namespace InfoReg
         /// <param name="num">A float that will be assigned the parsed value from the SI formatted string</param>
         /// <returns>A float value adjusted for the SI prefix value.</returns>
 
+        [Obsolete("Please use Parse<float>(string si_value, out num)")]
         public static void Parse(string si_value, out float num)
         {
             Parse<float>(si_value, out num);

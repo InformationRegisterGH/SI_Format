@@ -141,6 +141,21 @@
             strings like 10pF or 123.46 kilo-metres or 65.123 ml.
             </summary>
         </member>
+        <member name="F:InfoReg.SI_Format.SI_Prefixes">
+            <summary>
+            SI_Prefixes full name
+            </summary>
+        </member>
+        <member name="F:InfoReg.SI_Format.SI_ShortPrefixes">
+            <summary>
+            SI Prefixes single character
+            </summary>
+        </member>
+        <member name="F:InfoReg.SI_Format.StringShortPrefixes">
+            <summary>
+            StringShort_Prefixes
+            </summary>
+        </member>
         <member name="T:InfoReg.SI_Format.Padding">
             <summary>
             Padding is an enumerated type.
@@ -168,8 +183,49 @@
             noPaddingOrDash: No dash and no trailing space required
             </summary>
         </member>
+        <member name="M:InfoReg.SI_Format.Format``1(``0,System.String,System.String,InfoReg.SI_Format.Padding)">
+            <summary>
+            Format<T> // T may be float, double, or decimal </T>
+            </summary>
+            <param name="tval"></param>
+            <param name="sformat"></param>
+            <param name="siunit"></param>
+            <param name="padding"></param>
+            <returns>Formatted string e.g. "9.46 peta-metres"</returns>
+            
+            Returns values in text in SI format. An example is 123.45km.
+            It takes tval and looks at its decimal exponent. The exponent 
+            is reduced to its residue three value. It then prefixes the unit
+            passed in with the appropriate SI prefix.
+            
+            "quetta", "ronna", "yotta", "zetta", "exa", "peta", "tera", "giga", "mega", "kilo",
+            "", "milli", "micro", "nano", "pico", "femto", "atto", "zepto", "yocto", "ronto", "quecto"
+            
+            If siunit is two or less characters the return will use short SI
+            prefixes like:
+            "Q", "R", "Y", "Z", "E", "P", "T", "G", "M", "k",
+            "", "m", "μ", "n", "p", "f", "a", "z", "y", "r", "q"
+            
+            No prefix is needed if the value of d_val lies in the range 0.0 to just under 1000.0.
+            
+            Note: hecto, deca, deci, and centi are not supported.
+                  SI does not support numbers above 10^33 or below 10^-30 
+                  and any such value will be returned unmodified without SI prefix units.
+                  
+            <example>
+                     using InfoReg;
+                     ...
+                     String ans;
+                     double val = 123.456e17;
+                     ans = InfoReg.SI_Format.Format(val, "G6", "metres");
+                     => ans contains: "12.3456 exa-metres"
+                     ans = InfoReg.SI_Format.Format(val, "G6", "metres", noPaddingOrDash);
+                     => ans contains: "12.3456 exametres"
+            </example>
+        </member>
         <member name="M:InfoReg.SI_Format.Format(System.Double,System.String,System.String,InfoReg.SI_Format.Padding)">
             <summary>
+            *** Depreciated use Format<double> instead *** // </double>
             Returns values in text in SI format. An example is 123.45km.
             It takes a double value and looks at its decimal exponent. The exponent 
             is reduced to its residue three value. It then prefixes the unit
@@ -208,6 +264,7 @@
         </member>
         <member name="M:InfoReg.SI_Format.Format(System.Single,System.String,System.String,InfoReg.SI_Format.Padding)">
             <summary>
+            *** Depreciated use Format<float> instead *** // </float>
             Returns values in a text SI format. An example is 123.45km.
             It takes a float value and looks at its decimal exponent. The exponent 
             is reduced to its residue three value. It then prefixes the unit
@@ -244,6 +301,7 @@
         </member>
         <member name="M:InfoReg.SI_Format.Format(System.Decimal,System.String,System.String,InfoReg.SI_Format.Padding)">
             <summary>
+            *** Depreciated use Format<decimal> instead *** // </decimal>
             Returns values in text in SI format. An example is 123.45km.
             It takes a decimal value and looks at its decimal exponent. The exponent 
             is reduced to its residue three value. It then prefixes the unit
@@ -278,8 +336,26 @@
             <param name="padding">Padding.dashOnly | Padding.dashWithPadding | Padding.paddingOnly | Padding.noPaddingOrDash</param>
             <returns>Formatted string e.g. "9.46 pm"</returns>
         </member>
+        <member name="M:InfoReg.SI_Format.Parse``1(System.String,``0@)">
+            <summary>
+            Parse<T> is a generic function that takes a string value like "12.34 km" and returns a numeric value // </T>
+            Takes an SI formatted value like "12.34 km" and yields an out parameter of type double, float, or decimal with the
+            value 1.234e4. A String "10pF" would be returned as a numeric value 1e-11.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="si_value"></param>
+            <param name="tnum"></param>
+            <exception cref="T:System.Exception"></exception>
+            Example: ...
+                     using InfoReg;
+                     ...
+                     Double val;
+                     InfoReg.SI_Format.Parse("1.23456 km", out val);
+                     => val has the value 1.23456e3
+        </member>
         <member name="M:InfoReg.SI_Format.Parse(System.String,System.Double@)">
             <summary>
+            *** Depreciated use Parse<T> instead *** // </T>>
             Takes an SI formatted value like "12.34 km" and returns a double with the
             value 1.234e4. A String "10pF" would be returned as a double value 1e-11.
             Example: ...
@@ -291,11 +367,12 @@
               
             </summary>
             <param name="si_value">A string value like 12.345MHz</param>
-            <param name="dnum">A double that will be assigned the parsed value from the SI formatted string</param>
+            <param name="num">A double that will be assigned the parsed value from the SI formatted string</param>
             <returns>A double value adjusted for the SI prefix value.</returns>
         </member>
         <member name="M:InfoReg.SI_Format.Parse(System.String,System.Decimal@)">
             <summary>
+            *** Depreciated use Parse<T> instead *** // </T>
             Takes an SI formatted value like "12.34 km" and returns a decimal with the
             value 1.234e4. A String "10pF" would be returned as a decimal value 1e-11.
             Example: ...
@@ -306,11 +383,12 @@
                      => val has the value 1.23456e3
             </summary>
             <param name="si_value">A string value like 12.345MHz</param>
-            <param name="dnum">A decimal that will be assigned the parsed value from the SI formatted string</param>
+            <param name="num">A decimal that will be assigned the parsed value from the SI formatted string</param>
             <returns>A decimal value adjusted for the SI prefix value.</returns>
         </member>
         <member name="M:InfoReg.SI_Format.Parse(System.String,System.Single@)">
             <summary>
+            *** Depreciated use Parse<T> instead *** //</T>
             Takes an SI formatted value like "12.34 km" and returns a float with the
             value 1.234e4. A String "10pF" would be returned as a float value 1e-11.
             Example: ...
@@ -322,7 +400,7 @@
             
             </summary>
             <param name="si_value">A string value like 12.345MHz</param>
-            <param name="f_num">A float that will be assigned the parsed value from the SI formatted string</param>
+            <param name="num">A float that will be assigned the parsed value from the SI formatted string</param>
             <returns>A float value adjusted for the SI prefix value.</returns>
         </member>
     </members>

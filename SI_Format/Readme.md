@@ -6,7 +6,7 @@ InfoReg.SI_Format Provides functions to parse strings like 23.56MHz as a float o
 SI_Format also has a number of physical constants used by the engineering and scientific workers. An example is 
 InfoReg.Physical_Constants.LightSpeed. These are described at the end of this file.
 
-Version: 1.1.3 is built for .NET 6 and .NET 7 runtime environments. The Visual Studio 2022 project files,
+Version: 1.1.4 is built for .NET 8 runtime environments. The Visual Studio 2022 project files,
 C# source code, and unit tests are available on GitHub at:
 https://github.com/InformationRegisterGH/SI_Format
 
@@ -37,10 +37,10 @@ Padding will also indcate if a trailing space should be appended as padding.
 
 ---
 
-### InfoReg.SI_Format.Format(System.Double, System.String, System.String, InfoReg.SI_Format.Padding)
+### InfoReg.SI_Format.Format<T>(T tval, string sformat, string siunit, Padding padding = Padding.dashonly)
 
 Returns values in text in SI format. An example is 123.45km.
-It takes a double value and looks at its decimal exponent. The exponent 
+It takes a double, float, or decimal value and looks at its decimal exponent. The exponent 
 is reduced to its residue three value. It then prefixes the unit
 passed in with the appropriate SI prefix.
 
@@ -56,18 +56,17 @@ prefixes like:
 No prefix is needed if the value of d_val lies in the range 0.0 to just under 1000.0.
 
 Note: hecto, deca, deci, and centi are not supported.
-        SI does not support numbers above 10^33 or below 10^-30 
+        SI does not support numbers above 10^33^ or below 10^-30^ 
         and any such value will be returned unmodified without SI prefix units.
                   
-
-#### d_val
+#### tval
 A double value to be SI normalized.
 #### sformat
 Is the format string usually based on G or N (see C# string.Format).
 #### siunit
 An SI unit like watt, metre or l
 #### padding
-    -Padding.dashOnly
+    -Padding.dashOnly // default value
     -Padding.dashWithPadding
     -Padding.paddingOnly
     -Padding.noPaddingOrDash
@@ -76,198 +75,40 @@ Formatted string e.g. "9.46 peta-metres"
 
 **example**
 
+Code C#:
 using InfoReg;
-
 ...
-
 String ans;
-
 double val = 123.456e17;
-
-ans = InfoReg.SI_Format.Format(val, "G6", "metres");
-    
-    => ans contains: "12.3456 exa-metres"
-
-ans = InfoReg.SI_Format.Format(val, "G6", "metres", noPaddingOrDash);
-    
-    => ans contains: "12.3456 exametres"
+ans = InfoReg.SI_Format.Format<double>(val, "G6", "metres");
+// => ans contains: "12.3456 exa-metres"
+ans = InfoReg.SI_Format.Format<double>(val, "G6", "metres", noPaddingOrDash);
+// => ans contains: "12.3456 exametres
 
 ---
 
-### InfoReg.SI_Format.Format(System.Single, System.String, System.String, InfoReg.SI_Format.Padding)
 
-Returns values in a text SI format. An example is 123.45km.
-It takes a float value and looks at its decimal exponent. The exponent 
-is reduced to its residue three value. It then prefixes the unit
-passed in with the appropriate SI prefix.
+### InfoReg.SI_Format.Parse<T>(System.String si_value, out num)
 
-"quetta", "ronna", "yotta", "zetta", "exa", "peta", "tera", "giga", "mega", "kilo",
-"", "milli", "micro", "nano", "pico", "femto", "atto", "zepto", "yocto", "ronto", "quecto"
-
-If siunit is two or less characters the return will use short SI
-prefixes like:
-
-"Q", "R", "Y", "Z", "E", "P", "T", "G", "M", "k",
-"", "m", "μ", "n", "p", "f", "a", "z", "y", "r", "q"
-
-No prefix is needed if the value of d_val lies in the range 0.0 to just under 1000.0.
-
-Note: hecto, deca, deci, and centi are not supported.
-        SI does not support numbers above 10^33 or below 10^-30 
-        and any such value will be returned unmodified without SI prefix units.
-
-**Example:**
-
-using InfoReg;
-
-... 
-
-String ans;
-float fval = (float)123.789E-7;
-
-ans = InfoReg.SI_Format.Format(fval, "G4", "F");
-
-    => ans contains: "12.38 μF"
-
-ans = InfoReg.SI_Format.Format(fval, "G4", "Farads", InfoReg.SI_Format.Padding.dashWithPadding);
-
-    => ans contains: "12.38 micro-Farads " // Both a dash and trailing space are used
-
-#### f_val
-A float value to be SI normalized.
-#### sformat
-Is the format string usually based on G or N
-#### siunit
-An SI unit like watt, metre or l
-#### padding
-    -Padding.dashOnly
-    -Padding.dashWithPadding
-    -Padding.paddingOnly
-    -Padding.noPaddingOrDash
-#### returns
-Formatted string e.g. "9.46 peta-metres"
-
----
-
-### InfoReg.SI_Format.Format(System.Decimal, System.String, System.String, InfoReg.SI_Format.Padding)
-
-Returns values in text in SI format. An example is 123.45km.
-It takes a decimal value and looks at its decimal exponent. The exponent 
-is reduced to its residue three value. It then prefixes the unit
-passed in with the appropriate SI prefix.
-
-"quetta", "ronna", "yotta", "zetta", "exa", "peta", "tera", "giga", "mega", "kilo",
-"", "milli", "micro", "nano", "pico", "femto", "atto", "zepto", "yocto", "ronto", "quecto"
-
-If siunit is two or less characters the return will use short SI
-prefixes like:
-
-"Q", "R", "Y", "Z", "E", "P", "T", "G", "M", "k",
-"", "m", "μ", "n", "p", "f", "a", "z", "y", "r", "q"
-
-No prefix is needed if the value of d_val lies in the range 0.0 to just under 1000.0.
-
-Note: hecto, deca, deci, and centi are not supported.
-        SI does not support numbers above 10^33 or below 10^-30 
-        and any such value will be returned unmodified without SI prefix units.
-
-**Example:**
-
-using InfoReg;
-
-...
-
-String ans;
-
-Decimal decimal_val = Decimal.Parse("1234.5678901234567890123");
-
-ans = InfoReg.SI_Format.Format(decimal_val, "G21", "grams");
-
-    => ans contains: "1.23456789012345678901 kilo-grams"
-
-ans = InfoReg.SI_Format.Format(decimal_val, "G21", "grams", InfoReg.SI_Format.Padding.paddingOnly);
-
-    => ans contains: "1.23456789012345678901 kilograms " // trailing space added
-
-#### decimal_val
-A decimal value to be SI normalized.
-#### sformat
-Is the format string usually based on G or N
-#### siunit
-An SI unit like watt, metre or l
-#### padding
-    -Padding.dashOnly
-    -Padding.dashWithPadding
-    -Padding.paddingOnly
-    -Padding.noPaddingOrDash
-#### returns
-Formatted string e.g. "9.46 pm"
-
----
-
-### InfoReg.SI_Format.Parse(System.String, System.Double@)
-
-Takes an SI formatted value like "12.34 km" and returns a double with the
+Takes an SI formatted value like "12.34 km" and returns a double, float, or decimal with the
 value 1.234e4. A String "10pF" would be returned as a double value 1e-11.
 
-**Example:**
-
-using InfoReg;
-
-...
-
-Double val;
-
-InfoReg.SI_Format.Parse("1.23456 km", out val);
-    => val has the value 1.23456e3
-
 #### si_value
 A string value like 12.345MHz
-#### dnum
-A double that will be assigned the parsed value from the SI formatted string
-
+#### num
+A double, float, or decimal that will be assigned the parsed value from the SI formatted string.
 #### return
-A double value adjusted for the SI prefix value.
-
----
-
-### InfoReg.SI_Format.Parse(System.String, System.Decimal@)
-
-Takes an SI formatted value like "12.34 km" and returns a decimal with the
-value 1.234e4. A String "10pF" would be returned as a decimal value 1e-11.
+void
 
 **Example:**
 
+Code C#:
 using InfoReg;
 ...
-Decimal val;
-InfoReg.SI_Format.Parse("1.23456 km", out val);
-    => val has the value 1.23456e3</p>
-#### si_value
-A string value like 12.345MHz
-#### dnum
-A decimal that will be assigned the parsed value from the SI formatted string
-#### returns
-A decimal value adjusted for the SI prefix value.
+Double val;
+InfoReg.SI_Format.Parse<double>("1.23456 km", out val);
+//    => val has the value 1.23456e3`
 
----
-
-### InfoReg.SI_Format.Parse(System.String, System.Single@)
-
-Takes an SI formatted value like "12.34 km" and returns a float with the
-value 1.234e4. A String "10pF" would be returned as a float value 1e-11.</p>
-**Example:**
-using InfoReg;
-...
-float val;
-InfoReg.SI_Format.Parse("1.23456 km", out val);
-    => val has the value 1.23456e3          
-#### si_value
-A string value like 12.345MHz
-#### f_num
-A float that will be assigned the parsed value from the SI formatted string
-#### returns
-A float value adjusted for the SI prefix value.
 
 ---
 
