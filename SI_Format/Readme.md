@@ -75,7 +75,7 @@ Formatted string e.g. "9.46 peta-metres"
 
 **example**
 
-Code C#:
+``` C#:
 using InfoReg;
 ...
 String ans;
@@ -84,6 +84,7 @@ ans = InfoReg.SI_Format.Format<double>(val, "G6", "metres");
 // => ans contains: "12.3456 exa-metres"
 ans = InfoReg.SI_Format.Format<double>(val, "G6", "metres", noPaddingOrDash);
 // => ans contains: "12.3456 exametres
+```
 
 ---
 
@@ -102,13 +103,13 @@ void
 
 **Example:**
 
-Code C#:
+``` C#:
 using InfoReg;
 ...
 Double val;
 InfoReg.SI_Format.Parse<double>("1.23456 km", out val);
 //    => val has the value 1.23456e3`
-
+```
 
 ---
 
