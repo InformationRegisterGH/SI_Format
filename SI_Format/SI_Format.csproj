@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFrameworks>net6.0;net7.0;net8.0;</TargetFrameworks>
     <RootNamespace>InfoReg</RootNamespace>
     <AssemblyName>SI_Format</AssemblyName>
     <Authors>Information Register Limited</Authors>
@@ -26,10 +26,11 @@
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
 	<PackageReleaseNotes>
+		Packaged for .Net6, .Net7 or .Net 8.
 		The SI_Format package has been reduced in size.
 		This version uses just two functions Parse and Format.
-		InfoReg.SI_Format.Parse&lt;double&gt;("5nF", out num)
-		string ans = InfoReg.SI_Format.Format&lt;decimal&gt;("12.345678912345678", "G21", "grams")
+		InfoReg.SI_Format.Parse&lt;double&gt;("5nF", out num);
+		string ans = InfoReg.SI_Format.Format&lt;decimal&gt;("12.345678912345678", "G21", "grams");
 		Older functions like ParseDouble will work but are marked obsolete. In the next
 		release these will produce an error and necessitate migration. Migration is optional in this
 		release 1.1.4.
@@ -37,6 +38,7 @@
     <DocumentationFile>C:\Users\Conor\source\repos\SI_Format\SI_Format\SI_Format.xml</DocumentationFile>
     <IncludeSymbols>True</IncludeSymbols>
     <BaseOutputPath>bin\</BaseOutputPath>
+    <Title>SI_Format</Title>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
@@ -68,10 +70,7 @@
   </ItemGroup>
 
   <ItemGroup>
-	<None Include="README.md" Pack="true" PackagePath="\"/>
-    <None Update="SI_FormatInfo.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+	<None Include="README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
 
 </Project>

@@ -104,12 +104,12 @@ namespace InfoReg
             {
                 dval = (double)Convert.ChangeType(tval, typeof(double));
             }
-            if(typeof(T) == typeof(float))
+            if (typeof(T) == typeof(float))
             {
                 fval = (float)Convert.ChangeType(tval, typeof(float));
                 dval = (double)fval;
             }
-            if(typeof(T) == typeof(decimal))
+            if (typeof(T) == typeof(decimal))
             {
                 decval = (decimal)Convert.ChangeType(tval, typeof(decimal));
                 dval = (double)decval;
@@ -542,7 +542,7 @@ namespace InfoReg
             string[] string_parts = si_value.Trim().Split(' ');
             try
             {
-                if(typeof(T) == typeof(double))
+                if (typeof(T) == typeof(double))
                 {
                     dnum = double.Parse(string_parts[0]);
                     tnum = (T)Convert.ChangeType(dnum, typeof(T));
