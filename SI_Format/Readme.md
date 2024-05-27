@@ -9,6 +9,8 @@ InfoReg.Physical_Constants.LightSpeed. These are described at the end of this fi
 Version: 1.1.4 is built for .net6.0, .net7.0, and .net8.0 runtime environments. The Visual Studio 2022 project files,
 C# source code, and unit tests are available on GitHub at:
 https://github.com/InformationRegisterGH/SI_Format
+Version 1.1.4 is smaller than previous versions as it now uses type T for the Parse\<T\> and Format\<T\>
+functions. Thus, the reduced code size is easier to maintain.
 
 The applicable license agreement is available at: 
 https://github.com/InformationRegisterGH/SI_Format/blob/Main/SI_Format/license.txt
@@ -91,7 +93,7 @@ ans = InfoReg.SI_Format.Format<double>(val, "G6", "metres", noPaddingOrDash);
 ---
 
 
-### InfoReg.SI_Format.Parse\<T\>(System.String si_value, out num)
+### InfoReg.SI_Format.Parse\<T\>(System.String si_value, out T num)
 
 Takes an SI formatted value like "12.34 km" and returns a double, float, or decimal with the
 value 1.234e4. A String "10pF" would be returned as a double value 1e-11.

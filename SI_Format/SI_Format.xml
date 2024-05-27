@@ -183,10 +183,12 @@
             noPaddingOrDash: No dash and no trailing space required
             </summary>
         </member>
-        <member name="M:InfoReg.SI_Format.Format``1(``0,System.String,System.String,InfoReg.SI_Format.Padding)">
+        <member name="M:InfoReg.SI_Format.Format&lt;T&gt;(T, System.String, System.String, InfoReg.SI_Format.Padding)
             <summary>
-            Format<typeparamref name="T"/> // T may be float, double, or decimal
+            Format&lt;T&gt; 
+            is a generic function that takes a numeric value like 123,450 and returns a string like "123.45 km".
             </summary>
+            <typeparam name="T"></typeparam>
             <param name="tval"></param>
             <param name="sformat"></param>
             <param name="siunit"></param>
@@ -219,7 +221,7 @@
                      double val = 123.456e17;
                      ans = InfoReg.SI_Format.Format(val, "G6", "metres");
                      => ans contains: "12.3456 exa-metres"
-                     ans = InfoReg.SI_Format.Format(val, "G6", "metres", noPaddingOrDash);
+                     ans = InfoReg.SI_Format.Format(val, "G6", "metres", Padding.noPaddingOrDash);
                      => ans contains: "12.3456 exametres"
             </example>
         </member>
@@ -336,9 +338,9 @@
             <param name="padding">Padding.dashOnly | Padding.dashWithPadding | Padding.paddingOnly | Padding.noPaddingOrDash</param>
             <returns>Formatted string e.g. "9.46 pm"</returns>
         </member>
-        <member name="M:InfoReg.SI_Format.Parse``1(System.String,``0@)">
+        <member name="M:InfoReg.SI_Format.Parse&lt;T&gt;(System.String, out T tnum)
             <summary>
-            Parse<typeparamref name="T"/> is a generic function that takes a string value like "12.34 km" and returns a numeric value
+            Parse&lt;T&gt; is a generic function that takes a string value like "12.34 km" and returns a numeric value
             Takes an SI formatted value like "12.34 km" and yields an out parameter of type double, float, or decimal with the
             value 1.234e4. A String "10pF" would be returned as a numeric value 1e-11.
             </summary>

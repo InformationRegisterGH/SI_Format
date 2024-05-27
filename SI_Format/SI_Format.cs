@@ -52,8 +52,10 @@ namespace InfoReg
         };
 
         /// <summary>
-        /// Format<typeparamref name="T"/> // T may be float, double, or decimal
+        /// Format&lt;T&gt; 
+        /// is a generic function that takes a numeric value like 123,450 and returns a string like "123.45 km".
         /// </summary>
+        /// <typeparam name="T"></typeparam>
         /// <param name="tval"></param>
         /// <param name="sformat"></param>
         /// <param name="siunit"></param>
@@ -87,7 +89,7 @@ namespace InfoReg
         ///          double val = 123.456e17;
         ///          ans = InfoReg.SI_Format.Format(val, "G6", "metres");
         ///          => ans contains: "12.3456 exa-metres"
-        ///          ans = InfoReg.SI_Format.Format(val, "G6", "metres", noPaddingOrDash);
+        ///          ans = InfoReg.SI_Format.Format(val, "G6", "metres", Padding.noPaddingOrDash);
         ///          => ans contains: "12.3456 exametres"
         /// </example>
         public static String Format<T>(T tval, string sformat, string siunit, Padding padding = Padding.dashonly)
@@ -516,7 +518,7 @@ namespace InfoReg
         }
 
         /// <summary>
-        /// Parse<typeparamref name="T"/> is a generic function that takes a string value like "12.34 km" and returns a numeric value
+        /// Parse&lt;T&gt; is a generic function that takes a string value like "12.34 km" and returns a numeric value
         /// Takes an SI formatted value like "12.34 km" and yields an out parameter of type double, float, or decimal with the
         /// value 1.234e4. A String "10pF" would be returned as a numeric value 1e-11.
         /// </summary>
@@ -535,9 +537,9 @@ namespace InfoReg
         {
             // si_value is expected as 999.9999 km or 999.99999 kilo-metres
             // get numerical value
-            double? dnum = null;
-            float? fnum = null;
-            decimal? decnum = null;
+            Double? dnum = null;
+            Single? fnum = null;
+            Decimal? decnum = null;
             tnum = (T)Convert.ChangeType(0, typeof(T));
             string[] string_parts = si_value.Trim().Split(' ');
             try
@@ -547,9 +549,9 @@ namespace InfoReg
                     dnum = double.Parse(string_parts[0]);
                     tnum = (T)Convert.ChangeType(dnum, typeof(T));
                 }
-                if (typeof(T) == typeof(float))
+                if (typeof(T) == typeof(System.Single))
                 {
-                    fnum = float.Parse(string_parts[0]);
+                    fnum = Single.Parse(string_parts[0]);
                     tnum = (T)Convert.ChangeType(fnum, typeof(T));
                 }
                 if (typeof(T) == typeof(decimal))
@@ -603,9 +605,9 @@ namespace InfoReg
                 dnum *= Math.Pow(10.0, exp_adjust);
                 tnum = (T)Convert.ChangeType(dnum, typeof(T));
             }
-            if (typeof(T) == typeof(float))
+            if (typeof(T) == typeof(Single))
             {
-                fnum *= (float)MathF.Pow(10.0f, (float)exp_adjust);
+                fnum *= (Single)MathF.Pow(10.0f, (Single)exp_adjust);
                 tnum = (T)Convert.ChangeType(fnum, typeof(T));
             }
             if (typeof(T) == typeof(decimal))
