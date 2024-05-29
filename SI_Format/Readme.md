@@ -12,6 +12,8 @@ https://github.com/InformationRegisterGH/SI_Format
 Version 1.1.4 is smaller than previous versions as it now uses type T for the Parse\<T\> and Format\<T\>
 functions. Thus, the reduced code size is easier to maintain.
 
+Version: 1.1.4 updates physical constants values as of 2024-05-29 based on the 2022 values.
+
 The applicable license agreement is available at: 
 https://github.com/InformationRegisterGH/SI_Format/blob/Main/SI_Format/license.txt
 

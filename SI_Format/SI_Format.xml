@@ -8,6 +8,7 @@
             <summary>
                 Physical constants may be referenced unsing this class.
                 Please see https://physics.nist.gov/cuu/Constants/
+                Updated 2024-05-29 (2022 valuees) 
             </summary>
         </member>
         <member name="F:InfoReg.Physical_Constants.LightSpeed">
@@ -33,11 +34,13 @@
         <member name="F:InfoReg.Physical_Constants.MagneticConstant">
             <summary>
             MagneticConstant is the magnetic constant
+            Vacuum permeability
             </summary>
         </member>
         <member name="F:InfoReg.Physical_Constants.ElectricConstant">
             <summary>
             ElectricConstant is the electric constant
+            vacuum permittivity or permittivity of free space
             </summary>
         </member>
         <member name="F:InfoReg.Physical_Constants.MagneticFluxQuantum">
@@ -88,6 +91,7 @@
         <member name="F:InfoReg.Physical_Constants.AtomicMassUnit">
             <summary>
             AtomicMassUnit is the atomic mass unit constant
+            atomic mass constant
             </summary>
         </member>
         <member name="F:InfoReg.Physical_Constants.AvogadroConstant">

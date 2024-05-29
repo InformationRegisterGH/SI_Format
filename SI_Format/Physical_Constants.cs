@@ -5,6 +5,7 @@ namespace InfoReg
     /// <summary>
     ///     Physical constants may be referenced unsing this class.
     ///     Please see https://physics.nist.gov/cuu/Constants/
+    ///     Updated 2024-05-29 (2022 valuees) 
     /// </summary>
     public static class Physical_Constants
     {
@@ -34,20 +35,22 @@ namespace InfoReg
         /// <summary>
         /// ReducedPlankConstant is the reduced Plank's constant
         /// </summary>
-        public const double ReducedPlankConstant = 1.0545718e-34; // J / Hz
+        public const double ReducedPlankConstant = 1.054571817e-34; // J / Hz
         /// <summary>
         /// MagneticConstant is the magnetic constant
+        /// Vacuum permeability
         /// </summary>
-        public const double MagneticConstant = 1.25663706212e-6; // Neutons/sqaure Amp
+        public const double MagneticConstant = 1.25663706127e-6; // Neutons/sqaure Amp
         /// <summary>
         /// ElectricConstant is the electric constant
+        /// vacuum permittivity or permittivity of free space
         /// </summary>
-        public const double ElectricConstant = 8.8541878128e-12; // Farads/metre
+        public const double ElectricConstant = 8.8541878188e-12; // Farads/metre
                                                                  // Electromagnetic constant
         /// <summary>
         /// MagneticFluxQuantum is the quantum magnetic flux constant
         /// </summary>
-        public const double MagneticFluxQuantum = 2.067833831e-15; // Wb
+        public const double MagneticFluxQuantum = 2.067833848e-15; // Wb
         /// <summary>
         /// ElementaryCharge is the elementary charge constant
         /// </summary>
@@ -55,37 +58,38 @@ namespace InfoReg
         /// <summary>
         /// ElementaryCharge is the quantum conductance constant
         /// </summary>
-        public const double ConductanceQuantum = 7.748091729e-5; // S
+        public const double ConductanceQuantum = 7.74809173566e-5; // S
                                                                  // Atomic and nuclear
         /// <summary>
         /// ElectronMass is the mass of an electron
         /// </summary>
-        public const double ElectronMass = 9.1093837015e-31; // kg
+        public const double ElectronMass = 9.1093837139e-31; // kg
         /// <summary>
         /// ProtonMass is the mass of a proton
         /// </summary>
-        public const double ProtonMass = 1.67262192369e-27; // kg
+        public const double ProtonMass = 1.67262192595e-27; // kg
         /// <summary>
         /// FineStructureConstant is the fine structure constant
         /// </summary>
-        public const double FineStructureConstant = 7.2973525693e-3;
+        public const double FineStructureConstant = 7.2973525643e-3;
         /// <summary>
         /// RydbergConstant is the Rydberg constant
         /// </summary>
-        public const double RydbergConstant = 10973731.568160; // per metre
+        public const double RydbergConstant = 10973731.568157; // per metre
         /// <summary>
         /// BohrRadius is the Bohr radius constant
         /// </summary>
-        public const double BohrRadius = 5.29177210903e-11; // m
+        public const double BohrRadius = 5.29177210544e-11; // m
         /// <summary>
         /// ClassicalElectronRadius is the classical electron radius constant
         /// </summary>
-        public const double ClassicalElectronRadius = 2.8179403262e-15; // m
+        public const double ClassicalElectronRadius = 2.8179403205e-15; // m
                                                                         // Physio-chemical constants
         /// <summary>
         /// AtomicMassUnit is the atomic mass unit constant
+        /// atomic mass constant
         /// </summary>
-        public const double AtomicMassUnit = 1.66053906660e-27; // kg
+        public const double AtomicMassUnit = 1.66053906892e-27; // kg
         /// <summary>
         /// AvogadroConstant is the Avogadro constant
         /// </summary>
@@ -101,7 +105,7 @@ namespace InfoReg
         /// <summary>
         /// BoltzmannConstant is the Boltzmann's constant
         /// </summary>
-        public const double BoltzmannConstant = 1.380649 - 23; // J/K
+        public const double BoltzmannConstant = 1.380649e-23; // J/K
         /// <summary>
         /// Stefan_BoltzmannConstant is the Stefan_Boltzmann's constant
         /// </summary>
