@@ -97,131 +97,54 @@ namespace InfoReg
             // Note: hecto, deca, deci, and centi are not supported
             // si does not support numbers above 10^27 or below 10^-24 
             // return unmodified without SI prefix units
-            double exp;
-            double dval = 0.0;
-            float fval = (float)0.0;
-            decimal decval = 0.0m;
-            decimal decval1 = 0.0m;
-            if (typeof(T) == typeof(double))
-            {
-                dval = (double)Convert.ChangeType(tval, typeof(double));
-            }
-            if (typeof(T) == typeof(float))
-            {
-                fval = (float)Convert.ChangeType(tval, typeof(float));
-                dval = (double)fval;
-            }
-            if (typeof(T) == typeof(decimal))
-            {
-                decval = (decimal)Convert.ChangeType(tval, typeof(decimal));
-                dval = (double)decval;
-            }
-            exp = Math.Log10(dval);
-            if (exp >= 33.0 || exp <= -30.0)
+            Double exp;
+            Double _exp;
+            T _val = tval;
+            _exp = Math.Log10((double)Convert.ChangeType(tval, typeof(Double)));
+            if (_exp >= 33.0 || _exp <= -30.0)
             {
                 return string.Format("{0:" + sformat + "} {1}", tval, siunit);
             }
+            int exp1 = (int)(_exp / 3) * 3;
+            int adjust = 10; // Array element for no SI prefix
+            if (_exp < 0)
+            {
+                exp1 -= 3;
+            }
+            if (typeof(T) == typeof(Double))
+            {
+                _val = (T)Convert.ChangeType(((Double)Convert.ChangeType(_val, typeof(Double)) / Math.Pow(10.0, exp1)), typeof(T));
+            }
+            if (typeof(T) == typeof(Single))
+            {
+                _val = (T)Convert.ChangeType(((Single)Convert.ChangeType(_val, typeof(Single)) / MathF.Pow(10.0f, exp1)), typeof(T));
+            }
+            if (typeof(T) == typeof(Decimal))
+            {
+                _val = (T)Convert.ChangeType(((Decimal)Convert.ChangeType(_val, typeof(Decimal)) / (Decimal)Math.Pow(10.0, exp1)), typeof(T));
+            }
+
+            string si_prefixtouse = string.Empty;
+            int prefix_choice = -(exp1 / 3) + adjust;
+            if (siunit.Length >= 3)
+            {
+                si_prefixtouse = SI_Prefixes[-(exp1 / 3) + adjust];
+            }
             else
             {
-                int exp1 = (int)(exp / 3) * 3;
-                int adjust = 10; // Array element for no SI prefix
-                if (exp < 0)
-                {
-                    exp1 -= 3;
-                }
-                if (typeof(T) == typeof(float) || typeof(T) == typeof(double))
-                {
-                    dval = dval / Math.Pow(10.0, exp1);
-                }
-                else
-                {
-                    decval1 = decval / (decimal)Math.Pow(10.0, exp1);
-                }
-                int prefix_choice = -(exp1 / 3) + adjust;
-                if (siunit.Length >= 3)
-                {
-                    if (typeof(T) == typeof(float) || typeof(T) == typeof(double))
-                    {
-                        switch (padding)
-                        {
-                            case Padding.dashonly:
-                                if (prefix_choice != 10)
-                                {
-                                    return string.Format("{0:" + sformat + "} ", dval) + SI_Prefixes[prefix_choice] + "-" + siunit;
-                                }
-                                else
-                                {
-                                    return string.Format("{0:" + sformat + "} ", dval) + SI_Prefixes[prefix_choice] + siunit;
-                                }
-                            case Padding.dashWithPadding:
-                                if (prefix_choice != 10)
-                                {
-                                    return string.Format("{0:" + sformat + "} ", dval) + SI_Prefixes[prefix_choice] + "-" + siunit + " ";
-                                }
-                                else
-                                {
-                                    return string.Format("{0:" + sformat + "} ", dval) + SI_Prefixes[prefix_choice] + siunit + " ";
-                                }
-                            case Padding.paddingOnly:
-                                return string.Format("{0:" + sformat + "} ", dval) + SI_Prefixes[prefix_choice] + siunit + " ";
-                        }
-                        return string.Format("{0:" + sformat + "} ", dval) + SI_Prefixes[prefix_choice] + siunit; // Padding.noPaddingOrDash
-                    }
-                    else
-                    {
-                        switch (padding)
-                        {
-                            case Padding.dashonly:
-                                if (prefix_choice != 10)
-                                {
-                                    return string.Format("{0:" + sformat + "} ", decval1) + SI_Prefixes[-(exp1 / 3) + adjust] + "-" + siunit;
-                                }
-                                else
-                                {
-                                    return string.Format("{0:" + sformat + "} ", decval1) + SI_Prefixes[-(exp1 / 3) + adjust] + siunit;
-                                }
-                            case Padding.dashWithPadding:
-                                if (prefix_choice != 10)
-                                {
-                                    return string.Format("{0:" + sformat + "} ", decval1) + SI_Prefixes[-(exp1 / 3) + adjust] + "-" + siunit + " ";
-                                }
-                                else
-                                {
-                                    return string.Format("{0:" + sformat + "} ", decval1) + SI_Prefixes[-(exp1 / 3) + adjust] + siunit + " ";
-                                }
-                            case Padding.paddingOnly:
-                                return string.Format("{0:" + sformat + "} ", decval1) + SI_Prefixes[-(exp1 / 3) + adjust] + siunit + " ";
-                        }
-                        return string.Format("{0:" + sformat + "} ", decval1) + SI_Prefixes[-(exp1 / 3) + adjust] + siunit; // Padding.noPaddingOrDash
-                    }
-                }
-                else
-                {
-                    if (typeof(T) == typeof(float) || typeof(T) == typeof(double))
-                    {
-                        // A dash is not supported for short SI unit prefixes. Thus, supply with padding (a trailing space) or without
-                        if (padding == Padding.dashWithPadding || padding == Padding.paddingOnly)
-                        {
-                            return string.Format("{0:" + sformat + "} ", dval) + SI_ShortPrefixes[-(exp1 / 3) + adjust] + siunit + " ";
-                        }
-                        else
-                        {
-                            return string.Format("{0:" + sformat + "} ", dval) + SI_ShortPrefixes[-(exp1 / 3) + adjust] + siunit;
-                        }
-                    }
-                    else
-                    {
-                        if (padding == Padding.dashWithPadding || padding == Padding.paddingOnly)
-                        {
-                            return string.Format("{0:" + sformat + "} ", decval1) + SI_ShortPrefixes[-(exp1 / 3) + adjust] + siunit + " ";
-                        }
-                        else
-                        {
-                            return string.Format("{0:" + sformat + "} ", decval1) + SI_ShortPrefixes[-(exp1 / 3) + adjust] + siunit;
-                        }
-                    }
-                }
+                si_prefixtouse = SI_ShortPrefixes[prefix_choice];
             }
+            string si_paddingtouse = string.Empty;
+            if (padding == Padding.dashWithPadding || padding == Padding.paddingOnly)
+            {
+                si_paddingtouse = " ";
+            }
+            string si_dashtouse = string.Empty;
+            if (padding == Padding.dashWithPadding || padding == Padding.dashonly && prefix_choice != 10) // // No dash for no SI prefix
+            {
+                si_dashtouse = "-";
+            }
+            return string.Format("{0:" + sformat + "} ", _val) + si_prefixtouse + si_dashtouse + siunit + si_paddingtouse;
         }
 
         /// <summary>

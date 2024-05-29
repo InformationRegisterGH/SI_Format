@@ -16,11 +16,11 @@ namespace InfoRegSI
             double val = 123.456e17;
             ans = InfoReg.SI_Format.Format(val, "G6", "metres");
             Assert.AreEqual("12.3456 exa-metres", ans, false, AssertErrorMsg);
-            ans = InfoReg.SI_Format.Format(val, "G6", "m");
+            ans = InfoReg.SI_Format.Format(val, "G6", "m", SI_Format.Padding.noPaddingOrDash);
             Assert.AreEqual("12.3456 Em", ans, false, AssertErrorMsg);
             val = 98.7654E-21;
             ans = InfoReg.SI_Format.Format(val, "G6", "g");
-            Assert.AreEqual("98.7654 zg", ans, false, AssertErrorMsg);
+            Assert.AreEqual("98.7654 z-g", ans, false, AssertErrorMsg);
             val = 99.9995E32;
             ans = InfoReg.SI_Format.Format(val, "G7", "litres");
             Assert.AreEqual("9.99995E+33 litres", ans, false, AssertErrorMsg);
@@ -36,9 +36,9 @@ namespace InfoRegSI
             // "G4" will only print 3 characters in next test
             val = 0.5;
             ans = InfoReg.SI_Format.Format(val, "G4", "l");
-            Assert.AreEqual("500 ml", ans, false, AssertErrorMsg);
+            Assert.AreEqual("500 m-l", ans, false, AssertErrorMsg);
             val = 1500;
-            ans = InfoReg.SI_Format.Format(val, "N2", "m");
+            ans = InfoReg.SI_Format.Format(val, "N2", "m", SI_Format.Padding.noPaddingOrDash);
             Assert.AreEqual("1.50 km", ans, false, AssertErrorMsg);
             // A light year (based on an average 365.25 Earth days) in a vacuum
             val = 365.25 * 24.0 * 60.0 * 60.0 * InfoReg.Physical_Constants.LightSpeed;
@@ -55,7 +55,7 @@ namespace InfoRegSI
             string ans;
             float fval = (float)123.789E-7;
             ans = InfoReg.SI_Format.Format(fval, "G4", "F");
-            Assert.AreEqual("12.38 μF", ans, false, AssertErrorMsg);
+            Assert.AreEqual("12.38 μ-F", ans, false, AssertErrorMsg);
             fval = (float)24.765e6;
             ans = InfoReg.SI_Format.Format(fval, "G6", "meters");
             Assert.AreEqual("24.765 mega-meters", ans, false, AssertErrorMsg);
@@ -155,7 +155,7 @@ namespace InfoRegSI
             ans = InfoReg.SI_Format.Format<double>(val, "G6", "metres");
             Assert.AreEqual("12.3456 exa-metres", ans, false, AssertErrorMsg);
             float fval = (float)123.789E-7;
-            ans = InfoReg.SI_Format.Format<float>(fval, "G4", "F");
+            ans = InfoReg.SI_Format.Format<float>(fval, "G4", "F", SI_Format.Padding.noPaddingOrDash);
             Assert.AreEqual("12.38 μF", ans, false, AssertErrorMsg);
             decimal decimal_val = decimal.Parse("1234.5678901234567890123");
             ans = InfoReg.SI_Format.Format<decimal>(decimal_val, "G21", "grams");
