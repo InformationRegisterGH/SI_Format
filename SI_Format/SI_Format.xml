@@ -343,21 +343,22 @@
             <returns>Formatted string e.g. "9.46 pm"</returns>
         </member>
         <member name="M:InfoReg.SI_Format.Parse``1(System.String,``0@)">
-            <summary>
-            Parse&lt;T&gt; is a generic function that takes a string value like "12.34 km" and returns a numeric value
-            Takes an SI formatted value like "12.34 km" and yields an out parameter of type double, float, or decimal with the
-            value 1.234e4. A String "10pF" would be returned as a numeric value 1e-11.
-            </summary>
-            <typeparam name="T"></typeparam>
-            <param name="si_value"></param>
-            <param name="tnum"></param>
-            <exception cref="T:System.Exception"></exception>
-            Example: ...
-                     using InfoReg;
-                     ...
-                     Double val;
-                     InfoReg.SI_Format.Parse("1.23456 km", out val);
-                     => val has the value 1.23456e3
+             <summary>
+             Parse&lt;T&gt; is a generic function that takes a string value like "12.34 km" and returns a numeric value
+             Takes an SI formatted value like "12.34 km" and yields an out parameter of type double, float, or decimal with the
+             value 1.234e4. A String "10pF" would be returned as a numeric value 1e-11.
+             </summary>
+             <typeparam name="T"></typeparam>
+             <param name="si_value"></param>
+             <param name="tnum"></param>
+             <exception cref="T:System.Exception"></exception>
+             Example: ...
+                      using InfoReg;
+                      ...
+                      Double val;
+                      InfoReg.SI_Format.Parse("1.23456 km", out val);
+                      => val has the value 1.23456e3
+            
         </member>
         <member name="M:InfoReg.SI_Format.Parse(System.String,System.Double@)">
             <summary>

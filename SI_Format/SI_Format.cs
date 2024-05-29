@@ -288,7 +288,7 @@ namespace InfoReg
         ///          Double val;
         ///          InfoReg.SI_Format.Parse("1.23456 km", out val);
         ///          => val has the value 1.23456e3
-        
+        ///
         public static void Parse<T>(string si_value, out T tnum)
         {
             // si_value is expected as 999.9999 km or 999.99999 kilo-metres

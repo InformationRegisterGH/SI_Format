@@ -59,7 +59,7 @@ namespace InfoReg
         /// ElementaryCharge is the quantum conductance constant
         /// </summary>
         public const double ConductanceQuantum = 7.74809173566e-5; // S
-                                                                 // Atomic and nuclear
+                                                                   // Atomic and nuclear
         /// <summary>
         /// ElectronMass is the mass of an electron
         /// </summary>
