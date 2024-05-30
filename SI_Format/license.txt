@@ -1,4 +1,4 @@
-Copyright 2020 Information Register	
+Copyright 2020-2023 Information Register, 2024 Information Regsiter Limited
 
 Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
 

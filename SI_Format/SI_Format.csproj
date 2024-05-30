@@ -25,15 +25,14 @@
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
-	<PackageReleaseNotes>
-		Packaged for .Net6, .Net7 or .Net 8.
-		The SI_Format package has been reduced in size.
-		This version uses just two functions Parse and Format.
-		InfoReg.SI_Format.Parse&lt;double&gt;("5nF", out num);
-		string ans = InfoReg.SI_Format.Format&lt;decimal&gt;("12.345678912345678", "G21", "grams");
-		Older functions like ParseDouble will work but are marked obsolete. In the next
-		release these will produce an error and necessitate migration. Migration is optional in this
-		release 1.1.4.
+	<PackageReleaseNotes>Packaged for .Net6, .Net7 or .Net 8.
+The SI_Format package has been reduced in size.
+This version uses just two functions Parse and Format.
+InfoReg.SI_Format.Parse&lt;double&gt;("5nF", out num);
+string ans = InfoReg.SI_Format.Format&lt;decimal&gt;("12.345678912345678", "G21", "grams");
+Older functions like ParseDouble will work but are marked obsolete. In the next
+release these will produce an error and necessitate migration. Migration is optional in this
+release 1.1.4.
 	</PackageReleaseNotes>
     <DocumentationFile>C:\Users\Conor\source\repos\SI_Format\SI_Format\SI_Format.xml</DocumentationFile>
     <IncludeSymbols>True</IncludeSymbols>
@@ -65,12 +64,15 @@
   <ItemGroup>
     <None Include="license.txt">
       <Pack>True</Pack>
-      <PackagePath></PackagePath>
+      <PackagePath>\</PackagePath>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
 
   <ItemGroup>
-	<None Include="README.md" Pack="true" PackagePath="\" />
+	<None Include="README.md" Pack="true" PackagePath="\">
+	  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	</None>
   </ItemGroup>
 
 </Project>
