@@ -10,7 +10,7 @@
         SI_Format will also adjust the value of float, double or decimal such that 34,560 may be written as 34.56kB 
         where "B" was passed as the unit to use.
         Some physical constants are provided for C# use.    </Description>
-    <Copyright>Copyright (C) 2019-2024 Information Register Limited</Copyright>
+    <Copyright>Copyright (C) 2018-2023 Information Register, 2024 Information Register Limited</Copyright>
     <Deterministic>true</Deterministic>
     <AssemblyVersion>1.1.0.0</AssemblyVersion>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
