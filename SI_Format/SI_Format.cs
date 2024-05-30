@@ -139,9 +139,9 @@ namespace InfoReg
                 si_paddingtouse = " ";
             }
             string si_dashtouse = string.Empty;
-            if (padding == Padding.dashWithPadding || padding == Padding.dashonly && prefix_choice != 10) // // No dash for no SI prefix
+            if (padding == Padding.dashWithPadding || padding == Padding.dashonly)
             {
-                si_dashtouse = "-";
+                if (prefix_choice != 10) si_dashtouse = "-";  // No dash for no SI prefix (0 <= tval < 1,000)
             }
             return string.Format("{0:" + sformat + "} ", _val) + si_prefixtouse + si_dashtouse + siunit + si_paddingtouse;
         }
@@ -225,10 +225,10 @@ namespace InfoReg
         /// <param name="padding">Padding.dashOnly | Padding.dashWithPadding | Padding.paddingOnly | Padding.noPaddingOrDash</param>
         /// <returns>Formatted string e.g. "9.46 peta-metres"</returns>
 
-        [Obsolete("Please use Format<float>(float f_val, string sformat, string siunit, Padding padding = Padding.dashonly)")]
-        public static string Format(float f_val, string sformat, string siunit, Padding padding = Padding.dashonly)
+        [Obsolete("Please use Format<Single>(Single f_val, string sformat, string siunit, Padding padding = Padding.dashonly)")]
+        public static string Format(Single f_val, string sformat, string siunit, Padding padding = Padding.dashonly)
         {
-            return Format<float>(f_val, sformat, siunit, padding);
+            return Format<Single>(f_val, sformat, siunit, padding);
         }
 
         /// <summary>
@@ -340,7 +340,10 @@ namespace InfoReg
                 // Space is used to avoid a false positive where no prefix was given.
                 for (pos = 0; pos < SI_Prefixes.Length; pos++)
                 {
-                    if (SI_Prefixes[pos] == units[0]) { break; }
+                    if (SI_Prefixes[pos] == units[0])
+                    {
+                        break;
+                    }
                 }
                 if (pos == SI_Prefixes.Length) pos = -1;
             }
