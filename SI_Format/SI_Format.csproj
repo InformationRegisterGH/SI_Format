@@ -42,8 +42,7 @@ release 1.1.4.
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DocumentationFile>C:\Users\Conor\source\repos\SI_Format\SI_Format\SI_Format.xml</DocumentationFile>
-	<PackageReadmeFile>readme.md</PackageReadmeFile>	 
+    <DocumentationFile>C:\Users\Conor\source\repos\SI_Format\SI_Format\SI_Format.xml</DocumentationFile>	 
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netstandard2.0|AnyCPU'">
@@ -56,6 +55,7 @@ release 1.1.4.
     <AssemblyInfoVersionType>SettingsVersion</AssemblyInfoVersionType>
     <InheritWinAppVersionFrom>None</InheritWinAppVersionFrom>
     <PrimaryVersionType>AssemblyFileVersionAttribute</PrimaryVersionType>
+	<PackageReadmeFile>readme.md</PackageReadmeFile>  
   </PropertyGroup>
 
   <ItemGroup>
@@ -69,12 +69,13 @@ release 1.1.4.
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
+
+	<ItemGroup>
+		<None Include="readme.md">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
   
-  <ItemGroup>
-    <None Update="readme.md">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <Pack>True</Pack>
-      <PackagePath>\</PackagePath>
-    </None>
-  </ItemGroup>
 </Project>
