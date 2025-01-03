@@ -1,7 +1,7 @@
-copy SI_Format\bin\Release\SI_Format.1.1.4.nupkg \\IRNAS\IRNASShare\NuGetPackages\SI_Format.1.1.4.nupkg
+copy SI_Format\bin\Release\SI_Format.1.1.5.nupkg \\IRNAS\IRNASShare\NuGetPackages\SI_Format.1.1.5.nupkg
 
 cd \\IRNAS\IRNASShare\NuGetPackages
 
-dotnet nuget sign SI_Format.1.1.4.nupkg  --certificate-subject-name "Information Register Limited" --timestamper http://time.certum.pl
+dotnet nuget sign SI_Format.1.1.5.nupkg  --certificate-subject-name "Information Register Limited" --timestamper http://time.certum.pl
 
-dotnet nuget sign SI_Format.1.1.4.nupkg  --certificate-subject-name "Information Register Limited" --timestamper http://time.certum.pl --overwrite
+dotnet nuget sign SI_Format.1.1.5.nupkg  --certificate-subject-name "Information Register Limited" --timestamper http://time.certum.pl --overwrite

@@ -183,7 +183,7 @@ namespace InfoReg
         ///          ans = InfoReg.SI_Format.Format(val, "G6", "metres", noPaddingOrDash);
         ///          => ans contains: "12.3456 exametres"
         /// </example>
-        [Obsolete("Please use Format<double>(double d_val, string sformat, string siunit, Padding padding = Padding.dashonly)")]
+        [Obsolete("Please use Format<double>(double d_val, string sformat, string siunit, Padding padding = Padding.dashonly)", true)]
         public static String Format(double d_val, string sformat, string siunit, Padding padding = Padding.dashonly)
         {
             return Format<double>(d_val, sformat, siunit, padding);
@@ -225,7 +225,7 @@ namespace InfoReg
         /// <param name="padding">Padding.dashOnly | Padding.dashWithPadding | Padding.paddingOnly | Padding.noPaddingOrDash</param>
         /// <returns>Formatted string e.g. "9.46 peta-metres"</returns>
 
-        [Obsolete("Please use Format<Single>(Single f_val, string sformat, string siunit, Padding padding = Padding.dashonly)")]
+        [Obsolete("Please use Format<Single>(Single f_val, string sformat, string siunit, Padding padding = Padding.dashonly)", true)]
         public static string Format(Single f_val, string sformat, string siunit, Padding padding = Padding.dashonly)
         {
             return Format<Single>(f_val, sformat, siunit, padding);
@@ -267,7 +267,7 @@ namespace InfoReg
         /// <param name="padding">Padding.dashOnly | Padding.dashWithPadding | Padding.paddingOnly | Padding.noPaddingOrDash</param>
         /// <returns>Formatted string e.g. "9.46 pm"</returns>
 
-        [Obsolete("Please use Format<decimal>(decimal decimal_val, string sformat, string siunit, Padding padding = Padding.dashonly)")]
+        [Obsolete("Please use Format<decimal>(decimal decimal_val, string sformat, string siunit, Padding padding = Padding.dashonly)", true)]
         public static string Format(decimal decimal_val, string sformat, string siunit, Padding padding = Padding.dashonly)
         {
             return Format<decimal>(decimal_val, sformat, siunit, padding);
@@ -392,7 +392,7 @@ namespace InfoReg
         /// <param name="num">A double that will be assigned the parsed value from the SI formatted string</param>
         /// <returns>A double value adjusted for the SI prefix value.</returns>
 
-        [Obsolete("Please use Parse<double>(string si_value, out num)")]
+        [Obsolete("Please use Parse<double>(string si_value, out num)", true)]
         public static void Parse(string si_value, out double num)
         {
             Parse<double>(si_value, out num);
@@ -413,7 +413,7 @@ namespace InfoReg
         /// <param name="num">A decimal that will be assigned the parsed value from the SI formatted string</param>
         /// <returns>A decimal value adjusted for the SI prefix value.</returns>
 
-        [Obsolete("Please use Parse<decimal>(string si_value, out num)")]
+        [Obsolete("Please use Parse<decimal>(string si_value, out num)", true)]
         public static void Parse(string si_value, out decimal num)
         {
             Parse<decimal>(si_value, out num);
@@ -435,7 +435,7 @@ namespace InfoReg
         /// <param name="num">A float that will be assigned the parsed value from the SI formatted string</param>
         /// <returns>A float value adjusted for the SI prefix value.</returns>
 
-        [Obsolete("Please use Parse<float>(string si_value, out num)")]
+        [Obsolete("Please use Parse<float>(string si_value, out num)", true)]
         public static void Parse(string si_value, out float num)
         {
             Parse<float>(si_value, out num);

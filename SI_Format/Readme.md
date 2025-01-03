@@ -6,13 +6,12 @@ value like 23,560,000.0. InfoReg.SI_Format provides functions to write 1,860 as 
 SI_Format also has a number of physical constants used by the engineering and scientific workers. An example is 
 InfoReg.Physical_Constants.LightSpeed. These are described at the end of this file.
 
-Version: 1.1.4 is built for .net6.0, .net7.0, and .net8.0 runtime environments. The Visual Studio 2022 project files,
-C# source code, and unit tests are available on GitHub at:
+Version: 1.1.5 is built for .net6.0, .net7.0, .net8.0 and .net9.0 runtime environments. 
+The Visual Studio 2022 project files, C# source code, and unit tests are available 
+on GitHub at:
 https://github.com/InformationRegisterGH/SI_Format
-Version 1.1.4 is smaller than previous versions as it now uses type T for the Parse\<T\> and Format\<T\>
-functions. Thus, the reduced code size is easier to maintain.
 
-Version: 1.1.4 updates physical constants values as of 2024-05-29 based on the 2022 values.
+Version: 1.1.5.
 
 The applicable license agreement is available at: 
 https://github.com/InformationRegisterGH/SI_Format/blob/Main/SI_Format/license.txt
