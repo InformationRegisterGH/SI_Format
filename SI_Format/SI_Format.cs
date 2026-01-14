@@ -1,5 +1,6 @@
 ﻿// Maintain this file in UTF-8 coding
 using System;
+using System.Net.Http.Headers;
 using System.Reflection;
 
 namespace InfoReg
@@ -16,15 +17,35 @@ namespace InfoReg
         /// </summary>
         public static string[] SI_Prefixes = { "quetta", "ronna", "yotta", "zetta", "exa", "peta", "tera", "giga", "mega", "kilo",
                         "", "milli", "micro", "nano", "pico", "femto", "atto", "zepto", "yocto", "ronto", "quecto" };
+
+        /// <summary>
+        /// IEC_Prefixes full name
+        /// </summary>
+        public static string[] IEC_Prefixes = { "", "Kibi", "Mebi", "Gibi", "Tebi", "Pebi", "Exbi", "Zebi", "Yobi" };
+
         /// <summary>
         /// SI Prefixes single character
         /// </summary>
         public static string[] SI_ShortPrefixes = { "Q", "R", "Y", "Z", "E", "P", "T", "G", "M", "k",
                         "", "m", "μ", "n", "p", "f", "a", "z", "y", "r", "q" };
+
         /// <summary>
-        /// StringShort_Prefixes
+        /// Provides the set of standard IEC binary unit prefixes, ordered by increasing magnitude.
         /// </summary>
-        public static string StringShortPrefixes = "QRYZEPTGMk mμnpfazyrq";
+        /// <remarks>The array includes prefixes such as "Ki" for kibibyte, "Mi" for mebibyte, and so on,
+        /// following the IEC 60027-2 standard. The first element is an empty string, representing the base unit with no
+        /// prefix.</remarks>
+        public static string[] IEC_ShortPrefixes = { "", "Ki", "Mi", "Gi", "Ti", "Pi", "Ei", "Zi", "Yi" };
+
+        /// <summary>
+        /// SIStringShort_Prefixes
+        /// </summary>
+        public static string SIStringShortPrefixes = "QRYZEPTGMk mμnpfazyrq";
+
+        /// <summary>
+        /// IECStringShort_Prefixes
+        /// </summary>
+        public static string IECStringShortPrefixes = " KMGTPEZY";
 
         /// <summary>
         /// Padding is an enumerated type.
@@ -52,36 +73,69 @@ namespace InfoReg
         };
 
         /// <summary>
+        /// Specifies the unit format type to use when representing data sizes.
+        /// </summary>
+        /// <remarks>Use the SI format for decimal-based units (e.g., kilobyte = 1,000 bytes) and the IEC
+        /// format for binary-based units (e.g., kibibyte = 1,024 bytes). Choose the appropriate format based on the
+        /// standard required for display or calculation.</remarks>
+        public enum FormatType
+        {
+            /// <summary>
+            /// SI format type
+            /// </summary>
+            SI,
+            /// <summary>
+            /// IEC format type
+            /// </summary>
+            IEC
+        };
+
+        /// <summary>
         /// Format&lt;T&gt; 
         /// is a generic function that takes a numeric value like 123,450 and returns a string like "123.45 km".
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="tval"></param>
+        /// <param name="tval">
+        ///     tval is a numeric value of type T (double, float, decimal, int, long, short, byte)
+        /// </param>
         /// <param name="sformat"></param>
         /// <param name="siunit"></param>
         /// <param name="padding"></param>
-        /// <returns>Formatted string e.g. "9.46 peta-metres"</returns>
+        /// <param name="formatType"></param>
+        /// <returns>Format returns a string like "9.46 peta-metres" or "8 Gibibytes"</returns>
         /// 
-        /// Returns values in text in SI format. An example is 123.45km.
+        /// Returns values in text using SI format or IEC format. An example is 123.45km.
+        /// Note: hecto, deca, deci, and centi are not supported
+        /// si does not support numbers above 10^27 or below 10^-24 
+        /// return unmodified without SI prefix units. IEC format is valid for positive
+        /// values in the range 2^10 to 2^80.
         /// It takes tval and looks at its decimal exponent. The exponent 
         /// is reduced to its residue three value. It then prefixes the unit
-        /// passed in with the appropriate SI prefix.
+        /// passed in with the appropriate SI or IEC prefix...
         /// 
         /// "quetta", "ronna", "yotta", "zetta", "exa", "peta", "tera", "giga", "mega", "kilo",
         /// "", "milli", "micro", "nano", "pico", "femto", "atto", "zepto", "yocto", "ronto", "quecto"
         /// 
-        /// If siunit is two or less characters the return will use short SI
-        /// prefixes like:
+        /// and IEC prefixes like:
+        ///
+        /// "", "Kibi", "Mebi", "Gibi", "Tebi", "Pebi", "Exbi", "Zebi", "Yobi"
+        ///
+        /// or short prefixes like:
+        /// 
         /// "Q", "R", "Y", "Z", "E", "P", "T", "G", "M", "k",
         /// "", "m", "μ", "n", "p", "f", "a", "z", "y", "r", "q"
         /// 
-        /// No prefix is needed if the value of d_val lies in the range 0.0 to just under 1000.0.
+        /// and short IEC prefixes like:
+        /// 
+        /// "Ki", "Mi", "Gi", "Ti", "Pi", "Ei", "Zi", "Yi"
+        /// 
+        /// No prefix is needed if the value of d_val lies in the range 0.0 to just under 1000.0
+        /// for SI units or 0 to just under 2^10 for IEC units.
         /// 
         /// Note: hecto, deca, deci, and centi are not supported.
         ///       SI does not support numbers above 10^33 or below 10^-30 
         ///       and any such value will be returned unmodified without SI prefix units.
-        ///       
-
+        ///
         /// <example>
         ///          using InfoReg;
         ///          ...
@@ -92,185 +146,123 @@ namespace InfoReg
         ///          ans = InfoReg.SI_Format.Format(val, "G6", "metres", Padding.noPaddingOrDash);
         ///          => ans contains: "12.3456 exametres"
         /// </example>
-        public static String Format<T>(T tval, string sformat, string siunit, Padding padding = Padding.dashonly)
+        public static String Format<T>(T tval, string sformat, string siunit, Padding padding = Padding.dashonly, FormatType formatType = FormatType.SI)
         {
-            // Note: hecto, deca, deci, and centi are not supported
-            // si does not support numbers above 10^27 or below 10^-24 
-            // return unmodified without SI prefix units
-            Double exp;
-            T _val = tval;
-            exp = Math.Log10((double)Convert.ChangeType(tval, typeof(Double)));
-            if (exp >= 33.0 || exp <= -30.0)
+            if (formatType == FormatType.SI)
             {
-                return string.Format("{0:" + sformat + "} {1}", tval, siunit);
-            }
-            int exp1 = (int)(exp / 3) * 3;
-            int adjust = 10; // Array element for no SI prefix
-            if (exp < 0)
-            {
-                exp1 -= 3;
-            }
-            if (typeof(T) == typeof(Double))
-            {
-                _val = (T)Convert.ChangeType(((Double)Convert.ChangeType(_val, typeof(Double)) / Math.Pow(10.0, exp1)), typeof(T));
-            }
-            if (typeof(T) == typeof(Single))
-            {
-                _val = (T)Convert.ChangeType(((Single)Convert.ChangeType(_val, typeof(Single)) / MathF.Pow(10.0f, exp1)), typeof(T));
-            }
-            if (typeof(T) == typeof(Decimal))
-            {
-                _val = (T)Convert.ChangeType(((Decimal)Convert.ChangeType(_val, typeof(Decimal)) / (Decimal)Math.Pow(10.0, exp1)), typeof(T));
-            }
+                object _val;
+                if (typeof(T) == typeof(long) || typeof(T) == typeof(int) || typeof(T) == typeof(short) || typeof(T) == typeof(byte))
+                {
+                    _val = (Double)Convert.ChangeType(tval, typeof(Double));
+                }
+                else
+                {
+                    _val = tval;
+                }
+                Double exp;
+                exp = Math.Log10((double)Convert.ChangeType(tval, typeof(Double)));
+                if (exp >= 33.0 || exp <= -30.0)
+                {
+                    return string.Format("{0:" + sformat + "} {1}", tval, siunit);
+                }
+                int exp1 = (int)(exp / 3) * 3;
+                int adjust = 10; // Array element for no SI prefix
+                if (exp < 0)
+                {
+                    exp1 -= 3;
+                }
+                if (_val.GetType() == typeof(Double))
+                {
+                    _val = (double)_val / Math.Pow(10.0, exp1);
+                }
+                if (_val.GetType() == typeof(Single))
+                {
+                    _val = (T)Convert.ChangeType(((Single)Convert.ChangeType(_val, typeof(Single)) / MathF.Pow(10.0f, exp1)), typeof(T));
+                }
+                if (_val.GetType() == typeof(Decimal))
+                {
+                    _val = (T)Convert.ChangeType(((Decimal)Convert.ChangeType(_val, typeof(Decimal)) / (Decimal)Math.Pow(10.0, exp1)), typeof(T));
+                }
 
-            string si_prefixtouse = string.Empty;
-            int prefix_choice = -(exp1 / 3) + adjust;
-            if (siunit.Length >= 3)
-            {
-                si_prefixtouse = SI_Prefixes[-(exp1 / 3) + adjust];
+                string si_prefixtouse = string.Empty;
+                int prefix_choice = -(exp1 / 3) + adjust;
+                if (siunit.Length >= 3)
+                {
+                    si_prefixtouse = SI_Prefixes[-(exp1 / 3) + adjust];
+                }
+                else
+                {
+                    si_prefixtouse = SI_ShortPrefixes[prefix_choice];
+                }
+                string si_paddingtouse = string.Empty;
+                if (padding == Padding.dashWithPadding || padding == Padding.paddingOnly)
+                {
+                    si_paddingtouse = " ";
+                }
+                string si_dashtouse = string.Empty;
+                if (padding == Padding.dashWithPadding || padding == Padding.dashonly)
+                {
+                    if (prefix_choice != 10) si_dashtouse = "-";  // No dash for no SI prefix (0 <= tval < 1,000)
+                }
+                return string.Format("{0:" + sformat + "} ", _val) + si_prefixtouse + si_dashtouse + siunit + si_paddingtouse;
             }
             else
             {
-                si_prefixtouse = SI_ShortPrefixes[prefix_choice];
+                // IEC Format
+                object _val;
+                if (typeof(T) == typeof(long) || typeof(T) == typeof(int) || typeof(T) == typeof(short) || typeof(T) == typeof(byte))
+                {
+                    _val = (Double)Convert.ChangeType(tval, typeof(Double));
+                }
+                else
+                {
+                    _val = tval;
+                }
+                Double exp;
+                exp = Math.Log((double)Convert.ChangeType(tval, typeof(Double)), 2.0);
+                if (exp < 10.0 || exp >= 80.0)
+                {
+                    return string.Format("{0:" + sformat + "} {1}", tval, siunit);
+                }
+                int exp1 = (int)(exp / 10) * 10;
+                if (exp < 0)
+                {
+                    exp1 -= 10;
+                }
+                if (_val.GetType() == typeof(Double))
+                {
+                    _val = (double)_val / Math.Pow(2.0, exp1);
+                }
+                if (_val.GetType() == typeof(Single))
+                {
+                    _val = (T)Convert.ChangeType(((Single)Convert.ChangeType(_val, typeof(Single)) / MathF.Pow(2.0f, exp1)), typeof(T));
+                }
+                if (_val.GetType() == typeof(Decimal))
+                {
+                    _val = (T)Convert.ChangeType(((Decimal)Convert.ChangeType(_val, typeof(Decimal)) / (Decimal)Math.Pow(2.0, exp1)), typeof(T));
+                }
+                string iec_prefixtouse = string.Empty;
+                int prefix_choice = exp1 / 10;
+                if (siunit.Length >= 3)
+                {
+                    iec_prefixtouse = IEC_Prefixes[exp1 / 10];
+                }
+                else
+                {
+                    iec_prefixtouse = IEC_ShortPrefixes[prefix_choice];
+                }
+                string iec_paddingtouse = string.Empty;
+                if (padding == Padding.dashWithPadding || padding == Padding.paddingOnly)
+                {
+                    iec_paddingtouse = " ";
+                }
+                string iec_dashtouse = string.Empty;
+                if (padding == Padding.dashWithPadding || padding == Padding.dashonly)
+                {
+                    if (prefix_choice != 0) iec_dashtouse = "-";  // No dash
+                }
+                return string.Format("{0:" + sformat + "} ", _val) + iec_prefixtouse + iec_dashtouse + siunit + iec_paddingtouse;
             }
-            string si_paddingtouse = string.Empty;
-            if (padding == Padding.dashWithPadding || padding == Padding.paddingOnly)
-            {
-                si_paddingtouse = " ";
-            }
-            string si_dashtouse = string.Empty;
-            if (padding == Padding.dashWithPadding || padding == Padding.dashonly)
-            {
-                if (prefix_choice != 10) si_dashtouse = "-";  // No dash for no SI prefix (0 <= tval < 1,000)
-            }
-            return string.Format("{0:" + sformat + "} ", _val) + si_prefixtouse + si_dashtouse + siunit + si_paddingtouse;
-        }
-
-        /// <summary>
-        /// *** Depreciated use Format<double> instead *** // </double>
-        /// Returns values in text in SI format. An example is 123.45km.
-        /// It takes a double value and looks at its decimal exponent. The exponent 
-        /// is reduced to its residue three value. It then prefixes the unit
-        /// passed in with the appropriate SI prefix.
-        /// 
-        /// "quetta", "ronna", "yotta", "zetta", "exa", "peta", "tera", "giga", "mega", "kilo",
-        /// "", "milli", "micro", "nano", "pico", "femto", "atto", "zepto", "yocto", "ronto", "quecto"
-        /// 
-        /// If siunit is two or less characters the return will use short SI
-        /// prefixes like:
-        /// "Q", "R", "Y", "Z", "E", "P", "T", "G", "M", "k",
-        /// "", "m", "μ", "n", "p", "f", "a", "z", "y", "r", "q"
-        /// 
-        /// No prefix is needed if the value of d_val lies in the range 0.0 to just under 1000.0.
-        /// 
-        /// Note: hecto, deca, deci, and centi are not supported.
-        ///       SI does not support numbers above 10^33 or below 10^-30 
-        ///       and any such value will be returned unmodified without SI prefix units.
-        ///       
-        /// </summary>
-        /// <param name="d_val">A double value to be SI normalized.</param>
-        /// <param name="sformat">Is the format string usually based on G or N </param>
-        /// <param name="siunit">An SI unit like watt, metre or l</param>
-        /// <param name="padding">Padding.dashOnly | Padding.dashWithPadding | Padding.paddingOnly | Padding.noPaddingOrDash</param>
-        /// <returns>Formatted string e.g. "9.46 peta-metres"</returns>
-        /// <example>
-        ///          using InfoReg;
-        ///          ...
-        ///          String ans;
-        ///          double val = 123.456e17;
-        ///          ans = InfoReg.SI_Format.Format(val, "G6", "metres");
-        ///          => ans contains: "12.3456 exa-metres"
-        ///          ans = InfoReg.SI_Format.Format(val, "G6", "metres", noPaddingOrDash);
-        ///          => ans contains: "12.3456 exametres"
-        /// </example>
-        [Obsolete("Please use Format<double>(double d_val, string sformat, string siunit, Padding padding = Padding.dashonly)", true)]
-        public static String Format(double d_val, string sformat, string siunit, Padding padding = Padding.dashonly)
-        {
-            return Format<double>(d_val, sformat, siunit, padding);
-        }
-
-        /// <summary>
-        /// *** Depreciated use Format<float> instead *** // </float>
-        /// Returns values in a text SI format. An example is 123.45km.
-        /// It takes a float value and looks at its decimal exponent. The exponent 
-        /// is reduced to its residue three value. It then prefixes the unit
-        /// passed in with the appropriate SI prefix.
-        /// 
-        /// "quetta", "ronna", "yotta", "zetta", "exa", "peta", "tera", "giga", "mega", "kilo",
-        /// "", "milli", "micro", "nano", "pico", "femto", "atto", "zepto", "yocto", "ronto", "quecto"
-        /// 
-        /// If siunit is two or less characters the return will use short SI
-        /// prefixes like:
-        /// "Q", "R", "Y", "Z", "E", "P", "T", "G", "M", "k",
-        /// "", "m", "μ", "n", "p", "f", "a", "z", "y", "r", "q"
-        /// 
-        /// No prefix is needed if the value of d_val lies in the range 0.0 to just under 1000.0.
-        /// 
-        /// Note: hecto, deca, deci, and centi are not supported.
-        ///       SI does not support numbers above 10^33 or below 10^-30 
-        ///       and any such value will be returned unmodified without SI prefix units.
-        /// Example: ...
-        ///          using InfoReg;
-        ///          ...   
-        ///          String ans;
-        ///          float fval = (float)123.789E-7;
-        ///          ans = InfoReg.SI_Format.Format(fval, "G4", "F");
-        ///          => ans contains: "12.38 μF"
-        ///          ans = InfoReg.SI_Format.Format(fval, "G4", "Farads", InfoReg.SI_Format.Padding.dashWithPadding);
-        ///          => ans contains: "12.38 micro-Farads " // Both a dash and trailing space are used
-        /// </summary>
-        /// <param name="f_val">A float value to be SI normalized.</param>
-        /// <param name="sformat">Is the format string usually based on G or N </param>
-        /// <param name="siunit">An SI unit like watt, metre or l</param>
-        /// <param name="padding">Padding.dashOnly | Padding.dashWithPadding | Padding.paddingOnly | Padding.noPaddingOrDash</param>
-        /// <returns>Formatted string e.g. "9.46 peta-metres"</returns>
-
-        [Obsolete("Please use Format<Single>(Single f_val, string sformat, string siunit, Padding padding = Padding.dashonly)", true)]
-        public static string Format(Single f_val, string sformat, string siunit, Padding padding = Padding.dashonly)
-        {
-            return Format<Single>(f_val, sformat, siunit, padding);
-        }
-
-        /// <summary>
-        /// *** Depreciated use Format<decimal> instead *** // </decimal>
-        /// Returns values in text in SI format. An example is 123.45km.
-        /// It takes a decimal value and looks at its decimal exponent. The exponent 
-        /// is reduced to its residue three value. It then prefixes the unit
-        /// passed in with the appropriate SI prefix.
-        /// 
-        /// "quetta", "ronna", "yotta", "zetta", "exa", "peta", "tera", "giga", "mega", "kilo",
-        /// "", "milli", "micro", "nano", "pico", "femto", "atto", "zepto", "yocto", "ronto", "quecto"
-        /// 
-        /// If siunit is two or less characters the return will use short SI
-        /// prefixes like:
-        /// "Q", "R", "Y", "Z", "E", "P", "T", "G", "M", "k",
-        /// "", "m", "μ", "n", "p", "f", "a", "z", "y", "r", "q"
-        /// 
-        /// No prefix is needed if the value of d_val lies in the range 0.0 to just under 1000.0.
-        /// 
-        /// Note: hecto, deca, deci, and centi are not supported.
-        ///       SI does not support numbers above 10^33 or below 10^-30 
-        ///       and any such value will be returned unmodified without SI prefix units.
-        /// Example: ...
-        ///          using InfoReg;
-        ///          ...
-        ///          String ans;
-        ///          Decimal decimal_val = Decimal.Parse("1234.5678901234567890123");
-        ///          ans = InfoReg.SI_Format.Format(decimal_val, "G21", "grams");
-        ///          => ans contains: "1.23456789012345678901 kilo-grams"
-        ///          ans = InfoReg.SI_Format.Format(decimal_val, "G21", "grams", InfoReg.SI_Format.Padding.paddingOnly);
-        ///          => ans contains: "1.23456789012345678901 kilograms " // trailing space added
-        /// </summary>
-        /// <param name="decimal_val">A decimal value to be SI normalized.</param>
-        /// <param name="sformat">Is the format string usually based on G or N </param>
-        /// <param name="siunit">An SI unit like watt, metre or l</param>
-        /// <param name="padding">Padding.dashOnly | Padding.dashWithPadding | Padding.paddingOnly | Padding.noPaddingOrDash</param>
-        /// <returns>Formatted string e.g. "9.46 pm"</returns>
-
-        [Obsolete("Please use Format<decimal>(decimal decimal_val, string sformat, string siunit, Padding padding = Padding.dashonly)", true)]
-        public static string Format(decimal decimal_val, string sformat, string siunit, Padding padding = Padding.dashonly)
-        {
-            return Format<decimal>(decimal_val, sformat, siunit, padding);
         }
 
         /// <summary>
@@ -289,14 +281,17 @@ namespace InfoReg
         ///          InfoReg.SI_Format.Parse("1.23456 km", out val);
         ///          => val has the value 1.23456e3
         ///
-        public static void Parse<T>(string si_value, out T tnum)
+        public static void Parse<T>(string si_value, out T tnum, FormatType formatType = FormatType.SI)
         {
-            // si_value is expected as 999.9999 km or 999.99999 kilo-metres
+            // si_value is expected as 999.9999 km or 999.9999 kilo-metres
             // get numerical value
+            int position = 0;
+            double exp_adjust = 0.0;
             Double? dnum = null;
             Single? fnum = null;
             Decimal? decnum = null;
             tnum = (T)Convert.ChangeType(0, typeof(T));
+            string[] units;
             string[] string_parts = si_value.Trim().Split(' ');
             try
             {
@@ -320,125 +315,136 @@ namespace InfoReg
             {
                 throw new Exception("Error: SI_Parse<" + typeof(T).Name + "> failed to parse number part from " + si_value, e1);
             }
-
-            // Parse units to get the exponent multiplier
-            string[] units = string_parts[1].Split('-'); // if units is null assume short types like kg
-            double exp_adjust;
-            int pos;
-            if (units.Length == 1) // implies short notation
+            switch (formatType)
             {
-                // m for metres on its own no need to adjust exponent
-                if (units[0].Length == 1)
-                {
-                    return;
-                }
-                pos = StringShortPrefixes.IndexOf(string_parts[1][0]);
-            }
-            else
-            {
-                // A unit has been specfied
-                // Space is used to avoid a false positive where no prefix was given.
-                for (pos = 0; pos < SI_Prefixes.Length; pos++)
-                {
-                    if (SI_Prefixes[pos] == units[0])
+                case FormatType.SI:
+                    if(string_parts.Length < 2) // No IEC prefix.
                     {
-                        break;
+                        return;
                     }
-                }
-                if (pos == SI_Prefixes.Length) pos = -1;
-            }
-            if (pos < 0 || pos == 10)
-            {
-                return;
-            }
-            if (pos < 10)
-            {
-                exp_adjust = (10.0 - pos) * 3.0;
-            }
-            else
-            {
-                exp_adjust = (pos - 10.0) * -3.0;
-            }
-            if (typeof(T) == typeof(double))
-            {
-                dnum *= Math.Pow(10.0, exp_adjust);
-                tnum = (T)Convert.ChangeType(dnum, typeof(T));
-            }
-            if (typeof(T) == typeof(Single))
-            {
-                fnum *= (Single)MathF.Pow(10.0f, (Single)exp_adjust);
-                tnum = (T)Convert.ChangeType(fnum, typeof(T));
-            }
-            if (typeof(T) == typeof(decimal))
-            {
-                decnum *= (decimal)Math.Pow(10.0, exp_adjust);
-                tnum = (T)Convert.ChangeType(decnum, typeof(T));
-            }
-        }
+                    // Parse units to get the exponent multiplier
+                    if (string_parts[1].Contains("-") == true)
+                    {
+                        // Dash found, split on dash
+                        units = string_parts[1].Split('-');
+                    }
+                    else
+                    {
+                        // No dash found, treat entire string as unit
+                        units = new string[] { string_parts[1] };
+                    }
+                    if (units[0].Length == 1) // implies short notation
+                    {
+                        return; // No SI prefix present
+                    }
+                    if (units[0].Length <= 3) // km or MHz etc.
+                    {
+                        position = SIStringShortPrefixes.IndexOf(units[0][0]);
+                    }
+                    else
+                    {
+                        for(position = 0; position < SI_Prefixes.Length; position++)
+                        {
+                            if (position == 10) continue; // Skip no prefix entry
+                            if (units[0].StartsWith(SI_Prefixes[position], StringComparison.OrdinalIgnoreCase))
+                            {
+                                break;
+                            }
+                        }
+                    }
 
-        /// <summary>
-        /// *** Depreciated use Parse<T> instead *** // </T>>
-        /// Takes an SI formatted value like "12.34 km" and returns a double with the
-        /// value 1.234e4. A String "10pF" would be returned as a double value 1e-11.
-        /// Example: ...
-        ///          using InfoReg;
-        ///          ...
-        ///          Double val;
-        ///          InfoReg.SI_Format.Parse("1.23456 km", out val);
-        ///          => val has the value 1.23456e3
-        ///   
-        /// </summary>
-        /// <param name="si_value">A string value like 12.345MHz</param>
-        /// <param name="num">A double that will be assigned the parsed value from the SI formatted string</param>
-        /// <returns>A double value adjusted for the SI prefix value.</returns>
-
-        [Obsolete("Please use Parse<double>(string si_value, out num)", true)]
-        public static void Parse(string si_value, out double num)
-        {
-            Parse<double>(si_value, out num);
-        }
-
-        /// <summary>
-        /// *** Depreciated use Parse<T> instead *** // </T>
-        /// Takes an SI formatted value like "12.34 km" and returns a decimal with the
-        /// value 1.234e4. A String "10pF" would be returned as a decimal value 1e-11.
-        /// Example: ...
-        ///          using InfoReg;
-        ///          ...
-        ///          Decimal val;
-        ///          InfoReg.SI_Format.Parse("1.23456 km", out val);
-        ///          => val has the value 1.23456e3
-        /// </summary>
-        /// <param name="si_value">A string value like 12.345MHz</param>
-        /// <param name="num">A decimal that will be assigned the parsed value from the SI formatted string</param>
-        /// <returns>A decimal value adjusted for the SI prefix value.</returns>
-
-        [Obsolete("Please use Parse<decimal>(string si_value, out num)", true)]
-        public static void Parse(string si_value, out decimal num)
-        {
-            Parse<decimal>(si_value, out num);
-        }
-
-        /// <summary>
-        /// *** Depreciated use Parse<T> instead *** //</T>
-        /// Takes an SI formatted value like "12.34 km" and returns a float with the
-        /// value 1.234e4. A String "10pF" would be returned as a float value 1e-11.
-        /// Example: ...
-        ///          using InfoReg;
-        ///          ...
-        ///          float val;
-        ///          InfoReg.SI_Format.Parse("1.23456 km", out val);
-        ///          => val has the value 1.23456e3
-        /// 
-        /// </summary>
-        /// <param name="si_value">A string value like 12.345MHz</param>
-        /// <param name="num">A float that will be assigned the parsed value from the SI formatted string</param>
-        /// <returns>A float value adjusted for the SI prefix value.</returns>
-
-        [Obsolete("Please use Parse<float>(string si_value, out num)", true)]
-        public static void Parse(string si_value, out float num)
-        {
-            Parse<float>(si_value, out num);
+                    // If position < 0 i.e. not found or position == 10 (no prefix) return
+                    if (position < 0 || position == 10)
+                    {
+                        return;
+                    }
+                    if (position < 10)
+                    {
+                        exp_adjust = (10.0 - position) * 3.0;
+                    }
+                    else
+                    {
+                        exp_adjust = (position - 10.0) * -3.0;
+                    }
+                    if (typeof(T) == typeof(double))
+                    {
+                        dnum *= Math.Pow(10.0, exp_adjust);
+                        tnum = (T)Convert.ChangeType(dnum, typeof(T));
+                        return;
+                    }
+                    if (typeof(T) == typeof(Single))
+                    {
+                        fnum *= (Single)MathF.Pow(10.0f, (Single)exp_adjust);
+                        tnum = (T)Convert.ChangeType(fnum, typeof(T));
+                        return;
+                    }
+                    if (typeof(T) == typeof(decimal))
+                    {
+                        decnum *= (decimal)Math.Pow(10.0, exp_adjust);
+                        tnum = (T)Convert.ChangeType(decnum, typeof(T));
+                        return;
+                    }
+                    break;
+                case FormatType.IEC:
+                    // Parse units to get the exponent multiplier
+                    units = string_parts[1].Split('-'); // if units is null assume short types like kg
+                    if (units.Length == 1) // implies short notation
+                    {
+                        // B for bytes on its own no need to adjust exponent
+                        if (units[0].Length == 1)
+                        {
+                            return;
+                        }
+                        position = IECStringShortPrefixes.IndexOf(string_parts[1][0]);
+                    }
+                    else
+                    {
+                        // A unit has been specfied
+                        // Space is used to avoid a false positive where no prefix was given.
+                        for (position = 0; position < IEC_Prefixes.Length; position++)
+                        {
+                            if (IEC_Prefixes[position] == units[0])
+                            {
+                                break;
+                            }
+                        }
+                        if (position == IEC_Prefixes.Length) position = -1;
+                    }
+                    if (position < 0 || position > 9)
+                    {
+                        return;
+                    }
+                    //if (position < 10)
+                    //{
+                    //    exp_adjust = (10.0 - position) * 3.0;
+                    //}
+                    //else
+                    //{
+                    //    exp_adjust = (position - 10.0) * -3.0;
+                    //}
+                    if (typeof(T) == typeof(double))
+                    {
+                        dnum = Math.Pow(2, position * 10.0) * dnum;
+                        tnum = (T)Convert.ChangeType(dnum, typeof(T));
+                        return;
+                    }
+                    if (typeof(T) == typeof(Single))
+                    {
+                        fnum = MathF.Pow(2, position * 10.0f) * fnum;
+                        tnum = (T)Convert.ChangeType(fnum, typeof(T));
+                        return;
+                    }
+                    if (typeof(T) == typeof(decimal))
+                    {
+                        exp_adjust = position * 10.0;
+                        decnum = (decimal)Math.Pow(2, exp_adjust) * decnum;
+                        tnum = (T)Convert.ChangeType(decnum, typeof(T));
+                        return;
+                    }
+                    break;
+                default:
+                    throw new Exception("Error: SI_Parse<" + typeof(T).Name + "> unknown FormatType");
+            }
         }
     }
 }

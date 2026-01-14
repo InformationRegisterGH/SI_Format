@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="SI_Format/SI_Format.csproj" />
+  <Project Path="SI_Format_Test/SI_Format_Test.csproj">
+    <BuildDependency Project="SI_Format/SI_Format.csproj" />
+  </Project>
+</Solution>

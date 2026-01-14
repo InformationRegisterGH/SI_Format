@@ -150,14 +150,32 @@
             SI_Prefixes full name
             </summary>
         </member>
+        <member name="F:InfoReg.SI_Format.IEC_Prefixes">
+            <summary>
+            IEC_Prefixes full name
+            </summary>
+        </member>
         <member name="F:InfoReg.SI_Format.SI_ShortPrefixes">
             <summary>
             SI Prefixes single character
             </summary>
         </member>
-        <member name="F:InfoReg.SI_Format.StringShortPrefixes">
+        <member name="F:InfoReg.SI_Format.IEC_ShortPrefixes">
             <summary>
-            StringShort_Prefixes
+            Provides the set of standard IEC binary unit prefixes, ordered by increasing magnitude.
+            </summary>
+            <remarks>The array includes prefixes such as "Ki" for kibibyte, "Mi" for mebibyte, and so on,
+            following the IEC 60027-2 standard. The first element is an empty string, representing the base unit with no
+            prefix.</remarks>
+        </member>
+        <member name="F:InfoReg.SI_Format.SIStringShortPrefixes">
+            <summary>
+            SIStringShort_Prefixes
+            </summary>
+        </member>
+        <member name="F:InfoReg.SI_Format.IECStringShortPrefixes">
+            <summary>
+            IECStringShort_Prefixes
             </summary>
         </member>
         <member name="T:InfoReg.SI_Format.Padding">
@@ -187,49 +205,83 @@
             noPaddingOrDash: No dash and no trailing space required
             </summary>
         </member>
-        <member name="M:InfoReg.SI_Format.Format``1(``0,System.String,System.String,InfoReg.SI_Format.Padding)">
+        <member name="T:InfoReg.SI_Format.FormatType">
             <summary>
-            Format&lt;T&gt; 
-            is a generic function that takes a numeric value like 123,450 and returns a string like "123.45 km".
+            Specifies the unit format type to use when representing data sizes.
             </summary>
-            <typeparam name="T"></typeparam>
-            <param name="tval"></param>
-            <param name="sformat"></param>
-            <param name="siunit"></param>
-            <param name="padding"></param>
-            <returns>Formatted string e.g. "9.46 peta-metres"</returns>
-            
-            Returns values in text in SI format. An example is 123.45km.
-            It takes tval and looks at its decimal exponent. The exponent 
-            is reduced to its residue three value. It then prefixes the unit
-            passed in with the appropriate SI prefix.
-            
-            "quetta", "ronna", "yotta", "zetta", "exa", "peta", "tera", "giga", "mega", "kilo",
-            "", "milli", "micro", "nano", "pico", "femto", "atto", "zepto", "yocto", "ronto", "quecto"
-            
-            If siunit is two or less characters the return will use short SI
-            prefixes like:
-            "Q", "R", "Y", "Z", "E", "P", "T", "G", "M", "k",
-            "", "m", "μ", "n", "p", "f", "a", "z", "y", "r", "q"
-            
-            No prefix is needed if the value of d_val lies in the range 0.0 to just under 1000.0.
-            
-            Note: hecto, deca, deci, and centi are not supported.
-                  SI does not support numbers above 10^33 or below 10^-30 
-                  and any such value will be returned unmodified without SI prefix units.
-                  
-            <example>
-                     using InfoReg;
-                     ...
-                     String ans;
-                     double val = 123.456e17;
-                     ans = InfoReg.SI_Format.Format(val, "G6", "metres");
-                     => ans contains: "12.3456 exa-metres"
-                     ans = InfoReg.SI_Format.Format(val, "G6", "metres", Padding.noPaddingOrDash);
-                     => ans contains: "12.3456 exametres"
-            </example>
+            <remarks>Use the SI format for decimal-based units (e.g., kilobyte = 1,000 bytes) and the IEC
+            format for binary-based units (e.g., kibibyte = 1,024 bytes). Choose the appropriate format based on the
+            standard required for display or calculation.</remarks>
         </member>
-        <member name="M:InfoReg.SI_Format.Parse``1(System.String,``0@)">
+        <member name="F:InfoReg.SI_Format.FormatType.SI">
+            <summary>
+            SI format type
+            </summary>
+        </member>
+        <member name="F:InfoReg.SI_Format.FormatType.IEC">
+            <summary>
+            IEC format type
+            </summary>
+        </member>
+        <member name="M:InfoReg.SI_Format.Format``1(``0,System.String,System.String,InfoReg.SI_Format.Padding,InfoReg.SI_Format.FormatType)">
+             <summary>
+             Format&lt;T&gt; 
+             is a generic function that takes a numeric value like 123,450 and returns a string like "123.45 km".
+             </summary>
+             <typeparam name="T"></typeparam>
+             <param name="tval">
+                 tval is a numeric value of type T (double, float, decimal, int, long, short, byte)
+             </param>
+             <param name="sformat"></param>
+             <param name="siunit"></param>
+             <param name="padding"></param>
+             <param name="formatType"></param>
+             <returns>Format returns a string like "9.46 peta-metres" or "8 Gibibytes"</returns>
+             
+             Returns values in text using SI format or IEC format. An example is 123.45km.
+             Note: hecto, deca, deci, and centi are not supported
+             si does not support numbers above 10^27 or below 10^-24 
+             return unmodified without SI prefix units. IEC format is valid for positive
+             values in the range 2^10 to 2^80.
+             It takes tval and looks at its decimal exponent. The exponent 
+             is reduced to its residue three value. It then prefixes the unit
+             passed in with the appropriate SI or IEC prefix...
+             
+             "quetta", "ronna", "yotta", "zetta", "exa", "peta", "tera", "giga", "mega", "kilo",
+             "", "milli", "micro", "nano", "pico", "femto", "atto", "zepto", "yocto", "ronto", "quecto"
+             
+             and IEC prefixes like:
+            
+             "", "Kibi", "Mebi", "Gibi", "Tebi", "Pebi", "Exbi", "Zebi", "Yobi"
+            
+             or short prefixes like:
+             
+             "Q", "R", "Y", "Z", "E", "P", "T", "G", "M", "k",
+             "", "m", "μ", "n", "p", "f", "a", "z", "y", "r", "q"
+             
+             and short IEC prefixes like:
+             
+             "Ki", "Mi", "Gi", "Ti", "Pi", "Ei", "Zi", "Yi"
+             
+             No prefix is needed if the value of d_val lies in the range 0.0 to just under 1000.0
+             for SI units or 0 to just under 2^10 for IEC units.
+             
+             Note: hecto, deca, deci, and centi are not supported.
+                   SI does not support numbers above 10^33 or below 10^-30 
+                   and any such value will be returned unmodified without SI prefix units.
+            
+             <example>
+                      using InfoReg;
+                      ...
+                      String ans;
+                      double val = 123.456e17;
+                      ans = InfoReg.SI_Format.Format(val, "G6", "metres");
+                      => ans contains: "12.3456 exa-metres"
+                      ans = InfoReg.SI_Format.Format(val, "G6", "metres", Padding.noPaddingOrDash);
+                      => ans contains: "12.3456 exametres"
+             </example>
+        </member>
+        <member name="M:InfoReg.SI_Format.Parse``1(System.String,``0@,InfoReg.SI_Format.FormatType)">
              <summary>
              Parse&lt;T&gt; is a generic function that takes a string value like "12.34 km" and returns a numeric value
              Takes an SI formatted value like "12.34 km" and yields an out parameter of type double, float, or decimal with the

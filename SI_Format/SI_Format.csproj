@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net6.0;net7.0;net8.0;net9.0</TargetFrameworks>
+    <TargetFrameworks>net8.0;net9.0;net10.0</TargetFrameworks>
     <RootNamespace>InfoReg</RootNamespace>
     <AssemblyName>SI_Format</AssemblyName>
     <Authors>Information Register Limited</Authors>
@@ -10,7 +10,7 @@
         SI_Format will also adjust the value of float, double or decimal such that 34,560 may be written as 34.56kB 
         where "B" was passed as the unit to use.
         Some physical constants are provided for C# use.    </Description>
-    <Copyright>Copyright (C) 2018-2023 Information Register, 2024 Information Register Limited</Copyright>
+    <Copyright>Copyright (C) 2018-2023 Information Register, 2024 - 2025 Information Register Limited</Copyright>
     <Deterministic>true</Deterministic>
     <AssemblyVersion>1.1.0.0</AssemblyVersion>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
@@ -18,20 +18,17 @@
     <PackageLicenseFile>license.txt</PackageLicenseFile>
     <RepositoryUrl>https://github.com/InformationRegisterGH/SI_Format</RepositoryUrl>
     <RepositoryType>github</RepositoryType>
-    <Version>1.1.5</Version>
+    <Version>1.2.0</Version>
     <FileVersion>1.1.0.0</FileVersion>
     <SignAssembly>False</SignAssembly>
     <DelaySign>True</DelaySign>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
-	<PackageReleaseNotes>Version 1.1.5 is packaged for .Net6, .Net7, .Net8 or .Net9.
-The SI_Format package has been reduced in size.
+	<PackageReleaseNotes>Version 1.1.6 is packaged for .Net8, .Net9 or .Net10.
 This version uses just two functions Parse and Format.
 InfoReg.SI_Format.Parse&lt;double&gt;("5nF", out num);
 string ans = InfoReg.SI_Format.Format&lt;decimal&gt;("12.345678912345678", "G21", "grams");
-Older functions like ParseDouble will work but are marked obsolete and will produce a 
-compiler error if used.
 	</PackageReleaseNotes>
     <DocumentationFile>C:\Users\Conor\source\repos\SI_Format\SI_Format\SI_Format.xml</DocumentationFile>
     <IncludeSymbols>True</IncludeSymbols>

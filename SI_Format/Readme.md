@@ -1,17 +1,32 @@
 # SI_Format
 
-InfoReg.SI_Format Provides functions to parse strings like 23.56MHz as a float or single, double, or decimal 
-value like 23,560,000.0. InfoReg.SI_Format provides functions to write 1,860 as 1.86km or 1.86 kilometres.
+## Overview
+
+The InfoReg.SI_Format class provides functions to format numbers into SI prefixed strings and to parse
+SI prefixed strings back into numbers.
+
+InfoReg.SI_Format Provides a function to parse strings like 23.56MHz as a float or single, double, or decimal 
+value like 23,560,000.0. InfoReg.SI_Format provides a function to write 1,860 as 1.86km or 1.86 kilometres.
+
+IEC binary prefixes Kibi, Mebi, Gibi, Tebi, Pebi, Exbi, Zebi, and Yobi; along with the shorter prefixes of
+Ki, Mi, Gi, Ti, Pi, Ei, Zi, and Yi; are added with version 1.2.0. 
 
 SI_Format also has a number of physical constants used by the engineering and scientific workers. An example is 
 InfoReg.Physical_Constants.LightSpeed. These are described at the end of this file.
 
-Version: 1.1.5 is built for .net6.0, .net7.0, .net8.0 and .net9.0 runtime environments. 
-The Visual Studio 2022 project files, C# source code, and unit tests are available 
+### Supported Platforms
+
+SI_Format is built for .net8.0, .net9.0, and .net10.0 runtime environments.
+
+The Visual Studio 2026 project files, C# source code, and unit tests are available
 on GitHub at:
+
 https://github.com/InformationRegisterGH/SI_Format
 
-Version: 1.1.5.
+Note that version 1.1.5 supports .net6.0, .net7.0, .net8.0, and .net9.0. Version 1.1.5 was built using Visual 
+Studio 2022.
+
+### License
 
 The applicable license agreement is available at: 
 https://github.com/InformationRegisterGH/SI_Format/blob/Main/SI_Format/license.txt
@@ -38,34 +53,19 @@ Padding will also indcate if a trailing space should be appended as padding.
 #### InfoReg.SI_Format.Padding.noPaddingOrDash
     noPaddingOrDash: Neither dash, nor trailing space required
 
+### InfoReg.SI_Format.FormatType
+
+#### SI_Format.FormatType.SI
+    SI: Standard International prefixes (default or not specified value)
+#### SI_Format.FormatType.IEC
+    IEC: International Electrotechnical Commission binary prefixes
+
 ---
 
-### InfoReg.SI_Format.Format\<T\>(T tval, string sformat, string siunit, Padding padding = Padding.dashonly)
+### InfoReg.SI_Format.Format\<T\>(T tval, string sformat, string siunit, Padding padding = Padding.dashonly, FormatType formatType = FormatType.SI)
 
-Returns values in text in SI format. An example is 123.45km.
-It takes a double, float, or decimal value and looks at its decimal exponent. The exponent 
-is reduced to its residue three value. It then prefixes the unit
-passed in with the appropriate SI prefix.
-
-"quetta", "ronna", "yotta", "zetta", "exa", "peta", "tera", "giga", "mega", "kilo",
-"", "milli", "micro", "nano", "pico", "femto", "atto", "zepto", "yocto", "ronto", "quecto"
-
-If siunit is two or less characters the return will use short SI
-prefixes like:
-
-"Q", "R", "Y", "Z", "E", "P", "T", "G", "M", "k",
-"", "m", "μ", "n", "p", "f", "a", "z", "y", "r", "q"
-
-No prefix is needed if the value of d_val lies in the range 0.0 to just under 1000.0.
-
-Note: hecto, deca, deci, and centi are not supported.
-        SI does not support numbers above 10^33^ or below 10^-30^ 
-        and any such value will be returned unmodified without SI prefix units.
-                  
-### T
-One of [ double | single | decimal ] to be SI normalized.
-#### tval
-A double, single, or decimal value to be SI normalized.
+#### T
+One of [ double | single | decimal ] to be parsed from an SI formatted string.
 #### sformat
 Is the format string usually based on G or N (see C# string.Format).
 #### siunit
@@ -75,8 +75,41 @@ An SI unit like watt, metre or l
     -Padding.dashWithPadding
     -Padding.paddingOnly
     -Padding.noPaddingOrDash
+#### FormatType
+    -FormatType.SI // default value
+    -FormatType.IEC
 #### returns
 Formatted string e.g. "9.46 peta-metres"
+
+#### description
+
+Returns values in text in SI format. An example is 123.45km.
+It takes a double, float, or decimal value and looks at its decimal exponent. 
+The exponent is reduced to its residue three value. It then prefixes the unit
+passed in with the appropriate SI prefix of
+
+"quetta", "ronna", "yotta", "zetta", "exa", "peta", "tera", "giga", "mega", "kilo",
+"", "milli", "micro", "nano", "pico", "femto", "atto", "zepto", "yocto", "ronto", "quecto"
+
+or IEC binary prefixes of
+
+"", "Kibi", "Mebi", "Gibi", "Tebi", "Pebi", "Exbi", "Zebi", "Yobi".
+
+If siunit is two or less characters the return will use short SI
+prefixes like:
+
+"Q", "R", "Y", "Z", "E", "P", "T", "G", "M", "k",
+"", "m", "μ", "n", "p", "f", "a", "z", "y", "r", "q"
+
+or short IEC binary prefixes of
+
+"", "Ki", "Mi", "Gi", "Ti", "Pi", "Ei", "Zi", "Yi".
+
+No prefix is needed if the value of d_val lies in the range 0.0 to just under 1000.0.
+
+Note: hecto, deca, deci, and centi are not supported.
+        SI does not support numbers above 10^33^ or below 10^-30^ 
+        and any such value will be returned unmodified without SI prefix units.
 
 **example**
 
@@ -94,10 +127,11 @@ ans = InfoReg.SI_Format.Format<double>(val, "G6", "metres", noPaddingOrDash);
 ---
 
 
-### InfoReg.SI_Format.Parse\<T\>(System.String si_value, out T num)
+### InfoReg.SI_Format.Parse\<T\>(System.String si_value, out T num, FormatType formatType = FormatType.SI)
 
-Takes an SI formatted value like "12.34 km" and returns a double, float, or decimal with the
-value 1.234e4. A String "10pF" would be returned as a double value 1e-11.
+Takes an SI formatted value like "12.34 km" or an IEC value like "2.5 Gibibytes" and 
+returns a double, float, or decimal with the value 1.234e4. A String "10pF" would be 
+returned as a double value 1e-11.
 
 #### T
 One of [ double | single | decimal ] to be parsed from an SI formatted string.
@@ -105,8 +139,14 @@ One of [ double | single | decimal ] to be parsed from an SI formatted string.
 A string value like 12.345MHz
 #### num
 A double, float, or decimal that will be assigned the parsed value from the SI formatted string.
+#### FormatType
+    -FormatType.SI // default value
+    -FormatType.IEC
 #### return
 void
+
+#### description
+Parses an SI formatted string into a numeric value.
 
 **Example:**
 
