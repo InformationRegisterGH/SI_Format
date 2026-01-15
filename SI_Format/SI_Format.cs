@@ -273,6 +273,7 @@ namespace InfoReg
         /// <typeparam name="T"></typeparam>
         /// <param name="si_value"></param>
         /// <param name="tnum"></param>
+        /// <param name="formatType"></param>
         /// <exception cref="Exception"></exception>
         /// Example: ...
         ///          using InfoReg;

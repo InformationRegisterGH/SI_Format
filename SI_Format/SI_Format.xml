@@ -290,6 +290,7 @@
              <typeparam name="T"></typeparam>
              <param name="si_value"></param>
              <param name="tnum"></param>
+             <param name="formatType"></param>
              <exception cref="T:System.Exception"></exception>
              Example: ...
                       using InfoReg;
