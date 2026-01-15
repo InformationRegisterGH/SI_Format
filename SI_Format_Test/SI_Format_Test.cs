@@ -267,6 +267,27 @@ namespace InfoRegSI
             InfoReg.SI_Format.Parse<decimal>("1.234567890123456789012 km", out decimal_val);
             decimal ddans = (decimal)1234.567890123456789012;
             Assert.AreEqual(ddans.ToString("N"), decimal_val.ToString("N"), true, AssertErrorMsg);
+            InfoReg.SI_Format.Parse<double>("10 m", out val);  // 10 metres
+            dans = 10.0;
+            Assert.AreEqual(dans, val, 1.0e-6, AssertErrorMsg);
+            InfoReg.SI_Format.Parse<double>("10 mm", out val); // 10 millimetres
+            dans = 10.0 / 1000.0;
+            Assert.AreEqual(dans, val, 1.0e-6, AssertErrorMsg);
+            InfoReg.SI_Format.Parse<double>("10 Mm", out val); // 10 Megametres
+            dans = 10.0 * Math.Pow(10, 6);
+            Assert.AreEqual(dans, val, 1.0e-6, AssertErrorMsg);
+            InfoReg.SI_Format.Parse<double>("10 μm", out val); // 10 micrometres
+            dans = 10.0 * Math.Pow(10, -6);
+            Assert.AreEqual(dans, val, 1.0e-6, AssertErrorMsg);
+            InfoReg.SI_Format.Parse<double>("10 GHz", out val); // 10 gigahertz
+            dans = 10.0 * Math.Pow(10, 9);
+            Assert.AreEqual(dans, val, 1.0e-6, AssertErrorMsg);
+            InfoReg.SI_Format.Parse<double>("10 pF", out val); // 10 picofarads
+            dans = 10.0 * Math.Pow(10, -12);
+            Assert.AreEqual(dans, val, 1.0e-6, AssertErrorMsg);
+            InfoReg.SI_Format.Parse<double>("1 pico-farad", out val); // 1 picofarads
+            dans = 1.0 * Math.Pow(10, -12);
+            Assert.AreEqual(dans, val, 1.0e-6, AssertErrorMsg);
         }
 
         [TestMethod]
