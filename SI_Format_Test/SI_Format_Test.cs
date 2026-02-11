@@ -4,6 +4,8 @@ using System;
 using InfoReg;
 using System.Security;
 
+[assembly: DoNotParallelize]
+
 namespace InfoRegSI
 {
     [TestClass]

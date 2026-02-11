@@ -319,7 +319,7 @@ namespace InfoReg
             switch (formatType)
             {
                 case FormatType.SI:
-                    if(string_parts.Length < 2) // No IEC prefix.
+                    if (string_parts.Length < 2) // No IEC prefix.
                     {
                         return;
                     }
@@ -344,7 +344,7 @@ namespace InfoReg
                     }
                     else
                     {
-                        for(position = 0; position < SI_Prefixes.Length; position++)
+                        for (position = 0; position < SI_Prefixes.Length; position++)
                         {
                             if (position == 10) continue; // Skip no prefix entry
                             if (units[0].StartsWith(SI_Prefixes[position], StringComparison.OrdinalIgnoreCase))
